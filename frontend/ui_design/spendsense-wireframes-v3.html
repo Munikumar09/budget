@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpendSense – Wireframes v3</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f0ede8;--ink:#1a1a1a;--mid:#888;--light:#ccc;--lighter:#e8e4de;
+  --white:#fafaf8;--border:2px solid #1a1a1a;--border-l:1.5px solid #c5c0b8;
+  --r:12px;--pw:320px;--ph:640px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);padding:40px 20px 100px;}
+
+/* ── PAGE HEADER ── */
+.page-header{text-align:center;margin-bottom:56px;}
+.page-header h1{font-family:'Space Mono',monospace;font-size:26px;letter-spacing:-1px;margin-bottom:6px;}
+.page-header p{color:var(--mid);font-size:13px;}
+.badge{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;padding:3px 10px;border:1.5px solid var(--mid);border-radius:20px;color:var(--mid);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+
+/* ── SECTION ── */
+.section{margin-bottom:80px;max-width:1300px;margin-left:auto;margin-right:auto;}
+.section-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.section-label::before{content:'';width:18px;height:1.5px;background:var(--mid);}
+.section-label .num{font-size:10px;color:#bbb;}
+.section-note{font-size:11px;color:var(--mid);margin-bottom:16px;padding:8px 12px;border-left:2px solid var(--light);background:var(--white);border-radius:0 6px 6px 0;}
+
+/* ── ROW LAYOUTS ── */
+.row-phones{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;}
+.row-phones.center{justify-content:center;}
+/* stacked: label above phones */
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0;}
+.phone-caption{font-family:'Space Mono',monospace;font-size:10px;color:var(--mid);text-align:center;letter-spacing:.3px;}
+
+/* ── PHONE FRAME ── */
+/* Fixed-height phone = true mobile resolution feel */
+.phone{
+  width:var(--pw);
+  height:var(--ph);
+  background:var(--white);
+  border:2.5px solid var(--ink);
+  border-radius:36px;
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  box-shadow:4px 4px 0 var(--ink);
+  flex-shrink:0;
+}
+/* Expanded phone = shows full content beyond one screen, for documentation */
+.phone.expanded{
+  height:auto;
+  min-height:var(--ph);
+}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:20px;background:var(--ink);border-radius:0 0 12px 12px;z-index:10;}
+.screen{display:flex;flex-direction:column;margin-top:20px;flex:1;overflow:hidden;}
+.phone.expanded .screen{overflow:visible;flex:none;}
+
+/* ── ANNOTATIONS ── */
+.ann-list{margin-top:16px;display:flex;flex-direction:column;gap:7px;max-width:380px;}
+.ann{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink);line-height:1.4;}
+.ann-dot{width:16px;height:16px;border:1.5px solid var(--ink);border-radius:50%;flex-shrink:0;font-family:'Space Mono',monospace;font-size:8px;display:flex;align-items:center;justify-content:center;margin-top:1px;background:var(--white);}
+
+/* ── SHARED UI ATOMS ── */
+.sb{display:flex;justify-content:space-between;align-items:center;padding:6px 16px 4px;font-size:9px;font-family:'Space Mono',monospace;color:var(--mid);flex-shrink:0;}
+.sb-ic{display:flex;gap:3px;}.sbi{width:10px;height:6px;border:1px solid var(--mid);border-radius:1px;}
+.bnav{display:flex;border-top:var(--border-l);background:var(--white);position:relative;flex-shrink:0;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;gap:3px;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;}
+.ni.on{color:var(--ink);}
+.ni-ic{width:18px;height:18px;border:1.5px solid currentColor;border-radius:4px;}
+.ni-ic.circ{border-radius:50%;}
+.ni-fab{position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:44px;height:44px;background:var(--ink);border-radius:50%;border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;color:var(--white);font-size:22px;font-weight:300;line-height:1;}
+.btn-p{background:var(--ink);color:var(--white);border-radius:10px;padding:12px;font-family:'Space Mono',monospace;font-size:11px;text-align:center;letter-spacing:.5px;}
+.btn-s{background:transparent;color:var(--mid);border:var(--border-l);border-radius:10px;padding:12px;font-family:'Space Mono',monospace;font-size:11px;text-align:center;}
+.btn-sm{padding:7px 12px;font-size:9px;border-radius:8px;}
+.inp{border:var(--border-l);border-radius:8px;height:36px;padding:0 10px;font-size:10px;background:var(--lighter);display:flex;align-items:center;justify-content:space-between;}
+.inp-hint{font-size:10px;color:#bbb;}
+.lbl{font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.tog{width:28px;height:16px;border:1.5px solid var(--mid);border-radius:8px;position:relative;flex-shrink:0;}
+.tog::after{content:'';position:absolute;width:10px;height:10px;background:var(--mid);border-radius:50%;top:1px;left:2px;}
+.tog.on{border-color:var(--ink);}
+.tog.on::after{background:var(--ink);left:14px;}
+.chip{padding:4px 9px;border:var(--border-l);border-radius:6px;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid);}
+.chip.sel{border-color:var(--ink);color:var(--ink);background:var(--lighter);}
+.tag{display:inline-block;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid);border:1px solid var(--mid);border-radius:4px;padding:1px 5px;}
+.divider{display:flex;align-items:center;gap:8px;}
+.dl{flex:1;height:1px;background:var(--light);}
+.dt{font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;}
+.sec-title{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:6px;}
+.card{border:var(--border-l);border-radius:var(--r);background:var(--white);overflow:hidden;}
+.ai-badge{display:inline-block;background:var(--ink);color:var(--white);font-family:'Space Mono',monospace;font-size:8px;padding:2px 6px;border-radius:4px;}
+.col1{display:flex;flex-direction:column;gap:3px;}
+.row2{display:flex;gap:8px;}
+.back-btn{width:28px;height:28px;border:var(--border-l);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--mid);flex-shrink:0;}
+
+/* ─────────────────────────────────────
+   ONBOARDING ATOMS
+───────────────────────────────────── */
+.step-bar{display:flex;gap:4px;margin-bottom:8px;}
+.step{flex:1;height:3px;background:var(--lighter);border-radius:2px;}
+.step.done{background:var(--ink);}
+.auth-hd{padding:24px 20px 14px;}
+.auth-title{font-family:'Space Mono',monospace;font-size:16px;margin-bottom:4px;}
+.auth-sub{font-size:10px;color:var(--mid);line-height:1.5;}
+.auth-body{padding:0 20px 16px;display:flex;flex-direction:column;gap:10px;}
+/* OTP boxes */
+.otp-row{display:flex;gap:10px;justify-content:center;margin:8px 0;}
+.otp-box{width:48px;height:54px;border:var(--border-l);border-radius:10px;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:22px;}
+.otp-box.filled{border-color:var(--ink);background:var(--white);}
+.otp-box.active{border:var(--border);background:var(--white);}
+/* PIN keypad */
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px;}
+.key{aspect-ratio:1;border:var(--border-l);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:18px;background:var(--white);}
+.key.empty{border:none;background:transparent;}
+/* Feature slides */
+.slide-skip{font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;}
+.slide-illus{width:110px;height:82px;border:var(--border-l);border-radius:var(--r);background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:30px;}
+.slide-title{font-family:'Space Mono',monospace;font-size:15px;line-height:1.3;text-align:center;}
+.slide-desc{font-size:10px;color:var(--mid);line-height:1.6;text-align:center;}
+.dots{display:flex;gap:6px;justify-content:center;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--light);}
+.dot.on{width:18px;border-radius:3px;background:var(--ink);}
+
+/* ─────────────────────────────────────
+   DASHBOARD ATOMS
+───────────────────────────────────── */
+.bal-card{margin:8px 14px;border:var(--border);border-radius:var(--r);padding:14px;background:var(--ink);color:var(--white);position:relative;overflow:hidden;}
+.bal-card::after{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border:2px solid rgba(255,255,255,.1);border-radius:50%;}
+.bal-lbl{font-size:8px;opacity:.6;font-family:'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.bal-amt{font-family:'Space Mono',monospace;font-size:26px;margin-bottom:6px;}
+.bal-row{display:flex;gap:14px;}
+.bal-m{display:flex;flex-direction:column;gap:2px;}
+.bal-ml{font-size:8px;opacity:.5;}
+.bal-mv{font-size:11px;font-family:'Space Mono',monospace;}
+.ai-bar{margin:0 14px 8px;border:1.5px dashed var(--mid);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:8px;background:var(--lighter);}
+.waves{display:flex;gap:2px;align-items:center;}
+.wv{width:2px;background:var(--mid);border-radius:2px;}
+.ai-bar-txt{font-size:9px;color:var(--mid);font-style:italic;line-height:1.3;}
+.qstats{display:flex;gap:8px;padding:0 14px;margin-bottom:8px;}
+.sc{flex:1;border:var(--border-l);border-radius:10px;padding:8px 10px;background:var(--white);}
+.sl{font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;margin-bottom:3px;}
+.sv{font-family:'Space Mono',monospace;font-size:13px;}
+.sch{font-size:8px;color:var(--mid);margin-top:1px;}
+.mich{height:18px;display:flex;align-items:flex-end;gap:2px;margin-top:4px;border-bottom:1px solid var(--light);padding-bottom:2px;}
+.mb2{background:var(--mid);border-radius:1px 1px 0 0;flex:1;}
+.txn-h{display:flex;justify-content:space-between;align-items:center;padding:6px 14px 4px;}
+.txn-list{padding:0 14px;display:flex;flex-direction:column;gap:5px;}
+.txn-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border:var(--border-l);border-radius:10px;background:var(--white);}
+.txn-ic{width:30px;height:30px;border:var(--border-l);border-radius:8px;flex-shrink:0;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:12px;}
+.txn-info{flex:1;}
+.txn-name{font-size:10px;font-weight:500;margin-bottom:1px;}
+.txn-date{font-size:8px;color:var(--mid);}
+.txn-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.txn-amt{font-family:'Space Mono',monospace;font-size:11px;}
+.txn-cat{font-size:7px;color:var(--mid);background:var(--lighter);padding:1px 4px;border-radius:3px;}
+/* FAB bottom sheet */
+.fab-sheet{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:240px;background:var(--white);border:var(--border);border-radius:16px;box-shadow:4px 4px 0 var(--ink);overflow:hidden;z-index:20;}
+.fab-sheet-title{padding:8px 12px;font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);border-bottom:var(--border-l);text-transform:uppercase;letter-spacing:1px;}
+.fab-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--lighter);font-size:10px;}
+.fab-opt:last-child{border-bottom:none;}
+.fab-opt-ic{width:28px;height:28px;border:var(--border-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:var(--lighter);}
+.fab-opt-sub{font-size:8px;color:var(--mid);margin-top:1px;}
+
+/* ─────────────────────────────────────
+   ADD TRANSACTION ATOMS
+───────────────────────────────────── */
+.tabs{display:flex;border-bottom:var(--border-l);}
+.tab{flex:1;padding:8px 4px;text-align:center;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid);border-bottom:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.tab.on{color:var(--ink);border-bottom-color:var(--ink);}
+.tab-ic{width:16px;height:16px;border:1.5px solid currentColor;border-radius:4px;}
+.tab-ic.circ{border-radius:50%;}
+.amt-big{border:var(--border);border-radius:var(--r);padding:14px;text-align:center;background:var(--lighter);}
+.amt-lbl{font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;margin-bottom:4px;}
+.amt-val{font-family:'Space Mono',monospace;font-size:28px;}
+.type-tog{display:flex;border:var(--border-l);border-radius:8px;overflow:hidden;}
+.to{flex:1;padding:8px;text-align:center;font-size:9px;font-family:'Space Mono',monospace;color:var(--mid);}
+.to.on{background:var(--ink);color:var(--white);}
+.cat-grid{display:flex;flex-wrap:wrap;gap:5px;}
+/* AI parsed card */
+.apc{border:var(--border);border-radius:var(--r);overflow:hidden;width:100%;}
+.apc-hd{background:var(--ink);color:var(--white);padding:8px 12px;display:flex;justify-content:space-between;}
+.apc-title{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;}
+.apc-row{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid var(--lighter);gap:8px;}
+.apc-row:last-child{border-bottom:none;}
+.apc-key{font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;width:60px;flex-shrink:0;text-transform:uppercase;}
+.apc-val{flex:1;font-size:10px;}
+.apc-val.editing{border-bottom:1.5px solid var(--ink);padding-bottom:2px;}
+.apc-edit{font-size:8px;color:var(--mid);border:1px solid var(--light);border-radius:4px;padding:2px 6px;flex-shrink:0;}
+.apc-edit.on{border-color:var(--ink);color:var(--ink);}
+.conf-row{padding:6px 12px;border-top:1px solid var(--lighter);display:flex;align-items:center;gap:6px;font-size:8px;color:var(--mid);}
+.conf-bar{flex:1;height:4px;background:var(--lighter);border-radius:2px;overflow:hidden;}
+.conf-fill{height:100%;background:var(--mid);border-radius:2px;}
+/* Upload */
+.upload-zone{border:2px dashed var(--mid);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--lighter);text-align:center;}
+.src-row{display:flex;gap:8px;}
+.src-btn{flex:1;height:34px;border:var(--border-l);border-radius:8px;display:flex;align-items:center;justify-content:center;gap:4px;font-size:9px;color:var(--mid);}
+.pp{border:var(--border);border-radius:var(--r);overflow:hidden;}
+.pp-hd{background:var(--ink);color:var(--white);padding:8px 10px;font-family:'Space Mono',monospace;font-size:9px;display:flex;justify-content:space-between;}
+.pp-item{display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid var(--lighter);gap:8px;}
+.pp-item:last-child{border-bottom:none;}
+.pp-ck{width:14px;height:14px;border:1.5px solid var(--mid);border-radius:3px;flex-shrink:0;}
+.pp-ck.on{background:var(--ink);border-color:var(--ink);}
+.pp-info{flex:1;}
+.pp-name{font-size:9px;margin-bottom:1px;}
+.pp-meta{font-size:8px;color:var(--mid);}
+.pp-amt{font-family:'Space Mono',monospace;font-size:9px;}
+.pp-edit{font-size:8px;color:var(--mid);border:1px solid var(--light);border-radius:4px;padding:2px 6px;flex-shrink:0;}
+.pp-expand{background:var(--lighter);padding:8px 10px;border-bottom:1px solid var(--border-l);display:flex;gap:6px;flex-wrap:wrap;}
+.pp-ef{display:flex;flex-direction:column;gap:2px;flex:1;min-width:70px;}
+.pp-einp{border:var(--border-l);border-radius:6px;height:28px;padding:0 8px;font-size:9px;background:var(--white);display:flex;align-items:center;}
+
+/* ─────────────────────────────────────
+   ANALYTICS ATOMS
+───────────────────────────────────── */
+.chart-card{border:var(--border-l);border-radius:var(--r);padding:10px;background:var(--white);}
+.chart-title{font-size:9px;font-family:'Space Mono',monospace;color:var(--mid);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;display:flex;justify-content:space-between;align-items:center;}
+.ctt{font-size:8px;background:var(--lighter);padding:2px 6px;border-radius:4px;}
+.line-ch{height:70px;position:relative;border-bottom:1px solid var(--light);}
+.line-ch svg{position:absolute;inset:0;width:100%;height:100%;}
+.ch-lbl{display:flex;justify-content:space-between;margin-top:4px;font-size:7px;color:var(--light);font-family:'Space Mono',monospace;}
+.bar-ch{height:68px;display:flex;align-items:flex-end;gap:4px;}
+.bg2{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.bf2{width:100%;background:var(--mid);border-radius:2px 2px 0 0;}
+.bf2.hi{background:var(--ink);}
+.bl2{font-size:7px;color:var(--light);font-family:'Space Mono',monospace;}
+.donut-row{display:flex;gap:10px;align-items:center;}
+.donut-wrap{width:80px;height:80px;flex-shrink:0;}
+.dleg{flex:1;display:flex;flex-direction:column;gap:5px;}
+.dli{display:flex;align-items:center;gap:5px;font-size:9px;}
+.dld{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dln{flex:1;color:var(--mid);}
+.dlp{font-family:'Space Mono',monospace;font-size:9px;}
+.hm-lbl{display:flex;justify-content:space-between;font-size:7px;color:var(--light);font-family:'Space Mono',monospace;margin-bottom:4px;}
+.hm-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.hm{aspect-ratio:1;border-radius:2px;background:var(--lighter);}
+.hm.l1{background:#d4cfc9;}.hm.l2{background:#bbb5ae;}.hm.l3{background:#8a8480;}.hm.l4{background:#555;}.hm.l5{background:var(--ink);}
+.pred-card{border:var(--border);border-radius:var(--r);padding:12px;background:var(--ink);color:var(--white);display:flex;gap:10px;}
+.pred-ai{background:rgba(255,255,255,.15);border-radius:6px;padding:4px 6px;font-size:8px;font-family:'Space Mono',monospace;white-space:nowrap;height:fit-content;}
+.pred-txt{font-size:9px;line-height:1.5;opacity:.85;}
+.pred-hl{font-family:'Space Mono',monospace;font-size:13px;display:block;margin:4px 0;}
+.savings-card{border:var(--border);border-radius:var(--r);padding:12px;background:var(--ink);color:var(--white);}
+.ie-row{display:flex;gap:8px;}
+.ie{flex:1;border:var(--border-l);border-radius:10px;padding:8px;}
+.ie-l{font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;margin-bottom:3px;}
+.ie-v{font-family:'Space Mono',monospace;font-size:13px;margin-bottom:4px;}
+.ie-b{height:4px;background:var(--lighter);border-radius:2px;overflow:hidden;}
+.ie-f{height:100%;border-radius:2px;background:var(--mid);}
+.merch-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--lighter);}
+.merch-row:last-child{border-bottom:none;}
+
+/* ─────────────────────────────────────
+   GOALS / BUDGET / COMMITMENTS
+───────────────────────────────────── */
+.sub-tabs{display:flex;border-bottom:var(--border-l);}
+.sub-tab{flex:1;padding:8px 4px;text-align:center;font-size:9px;font-family:'Space Mono',monospace;color:var(--mid);border-bottom:2px solid transparent;}
+.sub-tab.on{color:var(--ink);border-bottom-color:var(--ink);}
+.goal-card{border:var(--border-l);border-radius:var(--r);padding:10px;background:var(--white);}
+.gp{height:6px;background:var(--lighter);border-radius:3px;overflow:hidden;margin:6px 0;}
+.gp-f{height:100%;border-radius:3px;background:var(--mid);}
+.gp-f.hi{background:var(--ink);}
+.goal-meta{display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;}
+.goal-actions{display:flex;gap:6px;margin-top:8px;}
+.gbtn{flex:1;height:28px;border:var(--border-l);border-radius:6px;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid);display:flex;align-items:center;justify-content:center;}
+.gbtn.p{background:var(--ink);color:var(--white);border-color:var(--ink);}
+.budget-sum{border:var(--border);border-radius:var(--r);padding:12px;background:var(--ink);color:var(--white);}
+.bc-row{display:flex;align-items:center;padding:7px 0;border-bottom:1px solid var(--lighter);gap:8px;}
+.bc-row:last-child{border-bottom:none;}
+.bc-bar{height:4px;background:var(--lighter);border-radius:2px;overflow:hidden;margin:3px 0;}
+.bc-f{height:100%;border-radius:2px;background:var(--mid);}
+.bc-f.warn{background:#888;}.bc-f.over{background:var(--ink);}
+.commit-card{border:var(--border-l);border-radius:var(--r);padding:10px;background:var(--white);}
+.cc-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.cc-ic{width:30px;height:30px;border:var(--border-l);border-radius:8px;flex-shrink:0;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:12px;}
+.cc-info{flex:1;}
+.cc-name{font-size:10px;font-weight:500;}
+.cc-due{font-size:8px;color:var(--mid);}
+.cc-amt{font-family:'Space Mono',monospace;font-size:12px;}
+.cc-bottom{display:flex;align-items:center;gap:5px;}
+.cc-tag{font-size:8px;padding:2px 5px;border:1px solid var(--light);border-radius:4px;color:var(--mid);}
+.ai-tip{border:1.5px dashed var(--mid);border-radius:10px;padding:8px 10px;font-size:9px;color:var(--mid);line-height:1.5;background:var(--lighter);display:flex;gap:8px;}
+
+/* ─────────────────────────────────────
+   FAMILY
+───────────────────────────────────── */
+.fam-m{display:flex;align-items:center;gap:10px;padding:10px;border:var(--border-l);border-radius:var(--r);background:var(--white);}
+.fam-av{width:38px;height:38px;border:var(--border-l);border-radius:50%;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;flex-shrink:0;}
+.comb-card{border:var(--border);border-radius:var(--r);padding:12px;background:var(--ink);color:var(--white);}
+.mb-row{display:flex;align-items:center;gap:6px;margin-top:5px;}
+.mb-name{font-size:8px;opacity:.7;width:40px;flex-shrink:0;}
+.mb-bar{flex:1;height:4px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden;}
+.mb-f{height:100%;border-radius:2px;background:rgba(255,255,255,.7);}
+.mb-f.alt{background:rgba(255,255,255,.4);}
+.merged-txn{display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid var(--lighter);gap:8px;}
+.merged-txn:last-child{border-bottom:none;}
+.merged-ic{width:28px;height:28px;border:var(--border-l);border-radius:7px;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.merged-badge{font-size:7px;background:var(--lighter);border-radius:3px;padding:1px 4px;color:var(--mid);border:1px solid var(--light);}
+
+/* ─────────────────────────────────────
+   SETTINGS
+───────────────────────────────────── */
+.pc{margin:10px 14px;border:var(--border-l);border-radius:var(--r);padding:12px;display:flex;gap:12px;align-items:center;background:var(--white);}
+.pc-av{width:48px;height:48px;border:var(--border-l);border-radius:50%;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:16px;flex-shrink:0;}
+.sett-sec{padding:0 14px;margin-bottom:10px;}
+.sett-grp{border:var(--border-l);border-radius:var(--r);overflow:hidden;background:var(--white);}
+.sett-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--lighter);font-size:10px;}
+.sett-row:last-child{border-bottom:none;}
+.sett-ic{width:26px;height:26px;border:var(--border-l);border-radius:7px;flex-shrink:0;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:12px;}
+.sett-lbl{flex:1;}
+.sett-sub{font-size:8px;color:var(--mid);margin-top:1px;}
+.sett-val{font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;}
+.sett-arr{font-size:10px;color:var(--light);}
+.type-tog2{display:flex;border:var(--border-l);border-radius:8px;overflow:hidden;width:126px;}
+.to2{flex:1;padding:5px 4px;text-align:center;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid);}
+.to2.on{background:var(--ink);color:var(--white);}
+/* feedback */
+.fb-reward{border:var(--border);border-radius:var(--r);padding:12px;background:var(--ink);color:var(--white);}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="badge">Low-Fidelity Wireframe v3</div>
+  <h1>SpendSense — Full UI Wireframes</h1>
+  <p>All screens · Fixed-resolution onboarding · Expanded documentation screens</p>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     01 — ONBOARDING
+     Row 1: 1A Splash (fixed phone size)
+     Row 2: 1B Slides × 3 (fixed phone size)
+     Row 3: Auth screens (fixed phone size)
+════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label"><span class="num">01</span> Onboarding</div>
+
+  <!-- ROW 1: Splash only -->
+  <div class="section-note">Row 1 — Splash screen (true phone resolution)</div>
+  <div class="row-phones" style="margin-bottom:32px;">
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div><div class="sbi"></div></div></div>
+          <!-- hero -->
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px 20px;gap:10px;text-align:center;">
+            <div style="width:68px;height:68px;border:var(--border);border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+              <div style="width:40px;height:40px;border:2px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:18px;font-weight:700;">$</div>
+            </div>
+            <div style="font-family:'Space Mono',monospace;font-size:22px;letter-spacing:-1px;">SpendSense</div>
+            <div style="font-size:11px;color:var(--mid);line-height:1.6;max-width:220px;">AI-powered expense tracking.<br>Your money. Smarter.</div>
+            <div style="display:flex;flex-direction:column;gap:6px;width:100%;margin-top:16px;">
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:var(--border-l);border-radius:10px;font-size:10px;background:var(--white);"><span>🎙</span><span>Voice, photo & manual entry</span></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:var(--border-l);border-radius:10px;font-size:10px;background:var(--white);"><span>📊</span><span>AI analytics & predictions</span></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:var(--border-l);border-radius:10px;font-size:10px;background:var(--white);"><span>👨‍👩‍👧</span><span>Family wallet & shared goals</span></div>
+            </div>
+          </div>
+          <div style="padding:16px 20px;display:flex;flex-direction:column;gap:8px;">
+            <div class="btn-p">GET STARTED</div>
+            <div class="btn-s">I ALREADY HAVE AN ACCOUNT</div>
+            <div style="text-align:center;font-size:9px;color:var(--mid);">By continuing you agree to our <span style="text-decoration:underline">Terms</span> & <span style="text-decoration:underline">Privacy</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">1A — Splash</div>
+    </div>
+  </div>
+
+  <!-- ROW 2: 3 slides -->
+  <div class="section-note">Row 2 — Feature onboarding slides (true phone resolution, swipeable)</div>
+  <div class="row-phones" style="margin-bottom:32px;">
+    <!-- slide 1 -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 20px 0;">
+            <div style="font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;">1 / 3</div>
+            <div class="slide-skip">SKIP</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 24px;gap:14px;">
+            <div class="slide-illus">🎙️</div>
+            <div class="slide-title">Add Transactions<br>Your Way</div>
+            <div class="slide-desc">Speak naturally, snap a receipt, or type manually. AI extracts merchant, amount and category instantly — no manual work needed.</div>
+          </div>
+          <div style="display:flex;justify-content:center;padding:10px 0;"><div class="dots"><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></div>
+          <div style="padding:12px 20px;display:flex;gap:8px;">
+            <div class="btn-s btn-sm" style="flex:1;opacity:0;">BACK</div>
+            <div class="btn-p btn-sm" style="flex:2;">NEXT →</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">1B — Slide 1 of 3</div>
+    </div>
+    <!-- slide 2 -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 20px 0;">
+            <div style="font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;">2 / 3</div>
+            <div class="slide-skip">SKIP</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 24px;gap:14px;">
+            <div class="slide-illus">📊</div>
+            <div class="slide-title">Smart Analytics<br>& Predictions</div>
+            <div class="slide-desc">Heatmaps, trends, category breakdowns. AI predicts your month-end spend and alerts you before you overshoot — in your voice, literally.</div>
+          </div>
+          <div style="display:flex;justify-content:center;padding:10px 0;"><div class="dots"><div class="dot"></div><div class="dot on"></div><div class="dot"></div></div></div>
+          <div style="padding:12px 20px;display:flex;gap:8px;">
+            <div class="btn-s btn-sm" style="flex:1;">← BACK</div>
+            <div class="btn-p btn-sm" style="flex:2;">NEXT →</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">1C — Slide 2 of 3</div>
+    </div>
+    <!-- slide 3 -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 20px 0;">
+            <div style="font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;">3 / 3</div>
+            <div class="slide-skip">SKIP</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 24px;gap:14px;">
+            <div class="slide-illus">👨‍👩‍👧</div>
+            <div class="slide-title">Track Together<br>with Family</div>
+            <div class="slide-desc">Connect family members and view combined spending. Shared transactions merge automatically. Set goals and budgets as a household.</div>
+          </div>
+          <div style="display:flex;justify-content:center;padding:10px 0;"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot on"></div></div></div>
+          <div style="padding:12px 20px;display:flex;gap:8px;">
+            <div class="btn-s btn-sm" style="flex:1;">← BACK</div>
+            <div class="btn-p btn-sm" style="flex:2;">GET STARTED →</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">1D — Slide 3 of 3</div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Auth flow (fixed phones) -->
+  <div class="section-note">Row 3 — Auth flow: Sign Up (Details → OTP → PIN → Currency) + Sign In</div>
+  <div class="row-phones">
+
+    <!-- SIGN UP step 1: Details only -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;overflow-y:auto;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div class="auth-hd">
+            <div class="step-bar"><div class="step done"></div><div class="step"></div><div class="step"></div><div class="step"></div></div>
+            <div class="auth-title">Create Account</div>
+            <div class="auth-sub">Step 1 of 4 — Your details</div>
+          </div>
+          <div class="auth-body">
+            <div class="col1"><div class="lbl">Full Name</div><div class="inp"><span class="inp-hint">Rahul Sharma</span></div></div>
+            <div class="col1"><div class="lbl">Email</div><div class="inp"><span class="inp-hint">you@email.com</span></div></div>
+            <div class="col1"><div class="lbl">Password</div><div class="inp"><span class="inp-hint">Min 8 characters</span><span style="font-size:9px;color:#bbb">Show</span></div></div>
+            <div class="col1"><div class="lbl">Confirm Password</div><div class="inp"><span class="inp-hint">••••••••</span></div></div>
+            <div class="btn-p" style="margin-top:6px;">SEND VERIFICATION CODE →</div>
+            <div class="divider"><div class="dl"></div><span class="dt">or sign up with</span><div class="dl"></div></div>
+            <div class="row2">
+              <div class="src-btn">🇬 Google</div>
+              <div class="src-btn"> Apple</div>
+            </div>
+            <div style="text-align:center;font-size:9px;color:var(--mid);">Already have an account? <span style="color:var(--ink);text-decoration:underline">Sign in</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">1E — Sign Up: Details</div>
+    </div>
+
+    <!-- SIGN UP step 2: OTP -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div class="auth-hd">
+            <div class="step-bar"><div class="step done"></div><div class="step done"></div><div class="step"></div><div class="step"></div></div>
+            <div class="auth-title">Verify Email</div>
+            <div class="auth-sub">Step 2 of 4 — We sent a 6-digit code to<br><strong>rahul@email.com</strong></div>
+          </div>
+          <div class="auth-body" style="align-items:center;">
+            <div style="font-size:10px;color:var(--mid);text-align:center;line-height:1.5;margin-bottom:6px;">Enter the code below to confirm your email. This keeps your account secure and lets us send budget alerts.</div>
+            <div class="otp-row">
+              <div class="otp-box filled">3</div>
+              <div class="otp-box filled">8</div>
+              <div class="otp-box active">_</div>
+              <div class="otp-box">_</div>
+              <div class="otp-box">_</div>
+              <div class="otp-box">_</div>
+            </div>
+            <div style="font-size:9px;color:var(--mid);text-align:center;">Didn't get it? <span style="color:var(--ink);text-decoration:underline">Resend (45s)</span></div>
+            <div class="btn-p" style="width:100%;margin-top:8px;">VERIFY →</div>
+            <div style="font-size:9px;color:var(--mid);text-align:center;margin-top:4px;"><span style="text-decoration:underline">Change email address</span></div>
+          </div>
+          <div style="padding:0 20px;margin-top:auto;margin-bottom:20px;">
+            <div style="padding:10px 12px;border:1.5px dashed var(--mid);border-radius:10px;font-size:9px;color:var(--mid);line-height:1.5;background:var(--lighter);">
+              📧 OTP is only required for email sign-up. Google & Apple accounts are already verified — no code needed.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">1F — Email OTP</div>
+    </div>
+
+    <!-- SIGN UP step 3: SET PIN -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div class="auth-hd">
+            <div class="step-bar"><div class="step done"></div><div class="step done"></div><div class="step done"></div><div class="step"></div></div>
+            <div class="auth-title">Set Your PIN</div>
+            <div class="auth-sub">Step 3 of 4 — For quick unlock & sensitive actions</div>
+          </div>
+          <div class="auth-body" style="align-items:center;">
+            <!-- PIN length choice -->
+            <div style="display:flex;gap:8px;width:100%;">
+              <div class="chip sel" style="flex:1;text-align:center;padding:8px;">4-Digit PIN</div>
+              <div class="chip" style="flex:1;text-align:center;padding:8px;">6-Digit PIN</div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:center;margin:10px 0;">
+              <div style="width:48px;height:56px;border:var(--border);border-radius:10px;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:24px;">•</div>
+              <div style="width:48px;height:56px;border:var(--border);border-radius:10px;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:24px;">•</div>
+              <div style="width:48px;height:56px;border:var(--border);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:24px;color:#bbb;">_</div>
+              <div style="width:48px;height:56px;border:var(--border-l);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:24px;color:#bbb;">_</div>
+            </div>
+            <div style="font-size:9px;color:var(--mid);text-align:center;margin-bottom:6px;">This PIN keeps your app secure. You'll use it for quick login and to confirm sensitive actions like deletions.</div>
+            <div class="keypad">
+              <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+              <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+              <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+              <div class="key empty"></div><div class="key">0</div><div class="key" style="color:var(--mid)">⌫</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">1G — Set PIN</div>
+    </div>
+
+    <!-- SIGN UP step 4: Currency only -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div class="auth-hd">
+            <div class="step-bar"><div class="step done"></div><div class="step done"></div><div class="step done"></div><div class="step done"></div></div>
+            <div class="auth-title">One last thing</div>
+            <div class="auth-sub">Step 4 of 4 — Pick your currency</div>
+          </div>
+          <div class="auth-body">
+            <div style="font-size:10px;color:var(--mid);line-height:1.5;padding:8px 10px;border:var(--border-l);border-radius:8px;background:var(--lighter);">Everything else (theme, language, budget cycle) uses smart defaults and can be changed anytime in Settings.</div>
+            <div class="col1"><div class="lbl">Primary Currency</div><div class="inp" style="height:44px;font-size:11px;"><span>₹ INR — Indian Rupee</span><span style="font-size:10px;color:#bbb">▾</span></div></div>
+            <!-- Popular currencies list -->
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:var(--border);border-radius:9px;background:var(--lighter);">
+                <span style="font-size:14px;">🇮🇳</span><div style="flex:1"><div style="font-size:10px;">Indian Rupee</div><div style="font-size:8px;color:var(--mid);">₹ INR</div></div><div style="width:16px;height:16px;border:var(--border);border-radius:50%;background:var(--ink);"></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:var(--border-l);border-radius:9px;background:var(--white);">
+                <span style="font-size:14px;">🇺🇸</span><div style="flex:1"><div style="font-size:10px;">US Dollar</div><div style="font-size:8px;color:var(--mid);">$ USD</div></div><div style="width:16px;height:16px;border:var(--border-l);border-radius:50%;"></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:var(--border-l);border-radius:9px;background:var(--white);">
+                <span style="font-size:14px;">🇪🇺</span><div style="flex:1"><div style="font-size:10px;">Euro</div><div style="font-size:8px;color:var(--mid);">€ EUR</div></div><div style="width:16px;height:16px;border:var(--border-l);border-radius:50%;"></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:var(--border-l);border-radius:9px;background:var(--white);">
+                <span style="font-size:14px;">🇬🇧</span><div style="flex:1"><div style="font-size:10px;">British Pound</div><div style="font-size:8px;color:var(--mid);">£ GBP</div></div><div style="width:16px;height:16px;border:var(--border-l);border-radius:50%;"></div>
+              </div>
+              <div style="text-align:center;font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;padding:4px;">+ Search all currencies</div>
+            </div>
+            <div class="btn-p" style="margin-top:6px;">START USING SPENDSENSE →</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">1H — Pick Currency</div>
+    </div>
+
+    <!-- SIGN IN — returning user -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div class="auth-hd">
+            <div class="auth-title">Welcome back</div>
+            <div class="auth-sub">Sign in to SpendSense</div>
+          </div>
+          <div class="auth-body">
+            <div class="col1"><div class="lbl">Email</div><div class="inp"><span class="inp-hint">you@email.com</span></div></div>
+            <div class="col1"><div class="lbl">Password</div><div class="inp"><span class="inp-hint">••••••••</span><span style="font-size:9px;color:#bbb">Show</span></div></div>
+            <div style="text-align:right;font-size:9px;color:var(--mid);">Forgot password?</div>
+            <div class="btn-p">SIGN IN</div>
+            <div class="divider"><div class="dl"></div><span class="dt">or</span><div class="dl"></div></div>
+            <div class="row2">
+              <div class="src-btn">🇬 Google</div>
+              <div class="src-btn"> Apple</div>
+            </div>
+            <!-- Quick access only for RETURNING users (shown after first login) -->
+            <div style="padding:10px 12px;border:1.5px dashed var(--mid);border-radius:10px;background:var(--lighter);">
+              <div style="font-size:8px;font-family:'Space Mono',monospace;color:var(--mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Quick Access (returning users only)</div>
+              <div class="row2">
+                <div class="src-btn">👤 Face ID</div>
+                <div class="src-btn">🔏 Fingerprint</div>
+                <div class="src-btn">🔢 PIN</div>
+              </div>
+              <div style="font-size:8px;color:var(--mid);text-align:center;margin-top:5px;">These appear after your first successful sign-in</div>
+            </div>
+            <div style="text-align:center;font-size:9px;color:var(--mid);">New here? <span style="color:var(--ink);text-decoration:underline">Create account</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">1I — Sign In</div>
+    </div>
+
+  </div>
+  <div class="ann-list">
+    <div class="ann"><div class="ann-dot">1</div>Splash + slides stay fixed phone-height so layout is visualised at true resolution</div>
+    <div class="ann"><div class="ann-dot">2</div>Sign Up: 4 focused steps — Details → Verify Email → Set PIN → Currency. Each screen does one job.</div>
+    <div class="ann"><div class="ann-dot">3</div>OTP only for email sign-up; Google/Apple skip it (already verified)</div>
+    <div class="ann"><div class="ann-dot">4</div>PIN on its own screen with full numeric keypad — cleaner mental model</div>
+    <div class="ann"><div class="ann-dot">5</div>Currency screen notes all other prefs are defaulted — less decision fatigue at onboarding</div>
+    <div class="ann"><div class="ann-dot">6</div>Quick access (Biometric/PIN) shown on Sign In only for returning users with a clear note</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     02 — DASHBOARD
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label"><span class="num">02</span> Dashboard / Home</div>
+  <div class="section-note">FAB "+" expands a bottom sheet for all add-actions. Quick Actions row removed from dashboard to reduce clutter.</div>
+  <div class="row-phones">
+
+    <!-- Dashboard main -->
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:var(--border-l);">
+            <div><div style="font-size:10px;color:var(--mid);">Good morning,</div><div style="font-family:'Space Mono',monospace;font-size:13px;">Rahul 👋</div></div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <div style="position:relative;"><div style="width:20px;height:20px;border:var(--border-l);border-radius:5px;"></div><div style="position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--ink);border-radius:50%;border:2px solid var(--bg);"></div></div>
+              <div style="width:32px;height:32px;border:var(--border-l);border-radius:50%;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;">R</div>
+            </div>
+          </div>
+          <!-- Balance -->
+          <div class="bal-card">
+            <div class="bal-lbl">Total Balance</div>
+            <div class="bal-amt">₹1,42,580</div>
+            <div class="bal-row">
+              <div class="bal-m"><div class="bal-ml">↑ Income</div><div class="bal-mv">₹82,000</div></div>
+              <div class="bal-m"><div class="bal-ml">↓ Spent</div><div class="bal-mv">₹39,420</div></div>
+              <div class="bal-m"><div class="bal-ml">Savings</div><div class="bal-mv">52%</div></div>
+            </div>
+          </div>
+          <!-- AI bar -->
+          <div class="ai-bar">
+            <div class="waves"><div class="wv" style="height:8px"></div><div class="wv" style="height:13px"></div><div class="wv" style="height:5px"></div><div class="wv" style="height:10px"></div><div class="wv" style="height:4px"></div></div>
+            <div class="ai-bar-txt">"Food spend 22% higher this week. Tap to hear full insight."</div>
+          </div>
+          <!-- Quick stats -->
+          <div class="qstats">
+            <div class="sc"><div class="sl">This Month</div><div class="sv">₹18.2k</div><div class="sch">↑ +8% vs last</div><div class="mich"><div class="mb2" style="height:40%"></div><div class="mb2" style="height:60%"></div><div class="mb2" style="height:45%"></div><div class="mb2" style="height:80%"></div><div class="mb2" style="height:65%"></div><div class="mb2" style="height:100%"></div></div></div>
+            <div class="sc"><div class="sl">Budget Left</div><div class="sv">₹6.8k</div><div class="sch">14 days left</div><div class="mich"><div class="mb2" style="height:90%"></div><div class="mb2" style="height:70%"></div><div class="mb2" style="height:55%"></div><div class="mb2" style="height:40%"></div><div class="mb2" style="height:30%"></div><div class="mb2" style="height:35%"></div></div></div>
+          </div>
+          <!-- Upcoming commitments -->
+          <div style="padding:0 14px 6px;">
+            <div class="sec-title">Upcoming Commitments</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border:1.5px solid var(--ink);border-radius:9px;background:var(--lighter);">
+                <span>⚠️</span>
+                <div style="flex:1;font-size:9px;font-weight:500;">Car EMI <span style="font-size:8px;color:#888;font-weight:400;">— Due TOMORROW</span></div>
+                <div style="font-family:'Space Mono',monospace;font-size:10px;">₹8,500</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border:var(--border-l);border-radius:9px;background:var(--white);">
+                <span>🎵</span>
+                <div style="flex:1;font-size:9px;">Spotify Premium <span style="font-size:8px;color:var(--mid);">— Due in 3 days</span></div>
+                <div style="font-family:'Space Mono',monospace;font-size:10px;">₹199</div>
+              </div>
+            </div>
+          </div>
+          <!-- Recent transactions -->
+          <div class="txn-h"><div class="sec-title">Recent Transactions</div><div style="font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;">See all →</div></div>
+          <div class="txn-list" style="padding-bottom:10px;">
+            <div class="txn-row"><div class="txn-ic">🍕</div><div class="txn-info"><div class="txn-name">Swiggy – Lunch</div><div class="txn-date">Today, 1:32 PM</div></div><div class="txn-right"><div class="txn-amt">-₹340</div><div class="txn-cat">Food</div></div></div>
+            <div class="txn-row"><div class="txn-ic">💼</div><div class="txn-info"><div class="txn-name">Salary Credit</div><div class="txn-date">Feb 25, 9:00 AM</div></div><div class="txn-right"><div class="txn-amt" style="color:#444">+₹82,000</div><div class="txn-cat">Income</div></div></div>
+            <div class="txn-row"><div class="txn-ic">🎬</div><div class="txn-info"><div class="txn-name">Netflix</div><div class="txn-date">Feb 24</div></div><div class="txn-right"><div class="txn-amt">-₹649</div><div class="txn-cat">Subs</div></div></div>
+            <div class="txn-row"><div class="txn-ic">⛽</div><div class="txn-info"><div class="txn-name">HP Petrol Pump</div><div class="txn-date">Feb 23</div></div><div class="txn-right"><div class="txn-amt">-₹2,100</div><div class="txn-cat">Travel</div></div></div>
+          </div>
+          <div class="bnav">
+            <div class="ni on"><div class="ni-ic"></div>Home</div>
+            <div class="ni"><div class="ni-ic"></div>Analytics</div>
+            <div class="ni" style="flex:1.4"><div class="ni-fab">+</div><div style="margin-top:28px;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid)">Add</div></div>
+            <div class="ni"><div class="ni-ic"></div>Plans</div>
+            <div class="ni"><div class="ni-ic circ"></div>Profile</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">Dashboard</div>
+    </div>
+
+    <!-- FAB expanded state -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;position:relative;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <!-- dimmed bg suggestion -->
+          <div style="flex:1;background:rgba(26,26,26,.3);display:flex;align-items:flex-end;padding-bottom:70px;">
+            <div style="width:100%;padding:0 14px;">
+              <div style="background:var(--white);border:var(--border);border-radius:16px;overflow:hidden;box-shadow:4px 4px 0 var(--ink);">
+                <div style="padding:8px 14px;font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);border-bottom:var(--border-l);text-transform:uppercase;letter-spacing:1px;">Add Transaction</div>
+                <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--lighter);">
+                  <div style="width:32px;height:32px;border:var(--border-l);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--lighter);">✏️</div>
+                  <div><div style="font-size:11px;font-weight:500;">Manual Entry</div><div style="font-size:9px;color:var(--mid);">Type it in yourself</div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--lighter);">
+                  <div style="width:32px;height:32px;border:var(--border-l);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--lighter);">🎙</div>
+                  <div><div style="font-size:11px;font-weight:500;">Voice Command</div><div style="font-size:9px;color:var(--mid);">"Paid ₹340 for lunch at Swiggy"</div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--lighter);">
+                  <div style="width:32px;height:32px;border:var(--border-l);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--lighter);">📄</div>
+                  <div><div style="font-size:11px;font-weight:500;">Upload / Scan</div><div style="font-size:9px;color:var(--mid);">Receipt, bill or bank statement</div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;">
+                  <div style="width:32px;height:32px;border:var(--border-l);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--lighter);">🎯</div>
+                  <div><div style="font-size:11px;font-weight:500;">Add to Goal</div><div style="font-size:9px;color:var(--mid);">Contribute to a savings goal</div></div>
+                </div>
+              </div>
+              <div style="text-align:center;padding:10px;font-family:'Space Mono',monospace;font-size:10px;color:var(--white);">✕ Cancel</div>
+            </div>
+          </div>
+          <div class="bnav">
+            <div class="ni on"><div class="ni-ic"></div>Home</div>
+            <div class="ni"><div class="ni-ic"></div>Analytics</div>
+            <div class="ni" style="flex:1.4"><div class="ni-fab" style="background:#555;">✕</div><div style="margin-top:28px;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid)">Add</div></div>
+            <div class="ni"><div class="ni-ic"></div>Plans</div>
+            <div class="ni"><div class="ni-ic circ"></div>Profile</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">FAB "+" Expanded</div>
+    </div>
+
+  </div>
+  <div class="ann-list">
+    <div class="ann"><div class="ann-dot">1</div>Quick Actions removed from dashboard — all entry methods live in the FAB sheet</div>
+    <div class="ann"><div class="ann-dot">2</div>FAB tap dims background + slides up a bottom sheet: Manual / Voice / Upload / Add to Goal</div>
+    <div class="ann"><div class="ann-dot">3</div>Upcoming commitments with urgency state (overdue = bold border) stay on home for awareness</div>
+    <div class="ann"><div class="ann-dot">4</div>No account pills — account integration removed throughout</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     03 — ADD TRANSACTION
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label"><span class="num">03</span> Add Transaction — Manual · Voice · Upload</div>
+  <div class="row-phones">
+
+    <!-- 3A MANUAL -->
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:var(--border-l);">
+            <div class="back-btn">←</div>
+            <div style="font-family:'Space Mono',monospace;font-size:13px;">Add Transaction</div>
+          </div>
+          <div class="tabs">
+            <div class="tab on"><div class="tab-ic"></div>Manual</div>
+            <div class="tab"><div class="tab-ic circ"></div>Voice</div>
+            <div class="tab"><div class="tab-ic"></div>Upload</div>
+          </div>
+          <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;">
+            <div class="amt-big"><div class="amt-lbl">Amount</div><div class="amt-val">₹0<span style="display:inline-block;width:2px;height:24px;background:var(--ink);vertical-align:middle;margin-left:2px;"></span></div></div>
+            <div class="type-tog"><div class="to on">EXPENSE</div><div class="to">INCOME</div><div class="to">TRANSFER</div></div>
+            <div class="col1"><div class="lbl">Merchant / Description</div><div class="inp"><span class="inp-hint">e.g. Zomato</span></div></div>
+            <div class="row2">
+              <div class="col1" style="flex:1"><div class="lbl">Date</div><div class="inp"><span class="inp-hint">Today ▾</span></div></div>
+              <div class="col1" style="flex:1"><div class="lbl">Time</div><div class="inp"><span class="inp-hint">Now ▾</span></div></div>
+            </div>
+            <div class="col1"><div class="lbl">Category</div>
+              <div class="cat-grid">
+                <div class="chip sel">🍕 Food</div><div class="chip">🚗 Travel</div><div class="chip">🏠 Rent</div><div class="chip">🎬 Ent.</div><div class="chip">💊 Health</div><div class="chip">📚 Edu</div><div class="chip">🛍 Shop</div><div class="chip">⚡ Bills</div><div class="chip">+ More</div>
+              </div>
+            </div>
+            <div class="col1"><div class="lbl">Sub-category (optional)</div><div class="inp"><span class="inp-hint">e.g. Groceries ▾</span></div></div>
+            <div class="col1"><div class="lbl">Note (optional)</div><div class="inp"><span class="inp-hint">Add a note…</span></div></div>
+            <div class="col1"><div class="lbl">Attach Receipt</div>
+              <div style="border:1.5px dashed var(--mid);border-radius:8px;height:32px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mid);background:var(--lighter);">📎 Tap to attach photo or file</div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border:var(--border-l);border-radius:8px;font-size:10px;">
+              <div><div>Mark as Recurring?</div><div style="font-size:8px;color:var(--mid);">Adds to monthly commitments</div></div>
+              <div class="tog"></div>
+            </div>
+            <div class="btn-p">SAVE TRANSACTION</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">3A — Manual</div>
+    </div>
+
+    <!-- 3B VOICE -->
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:var(--border-l);">
+            <div class="back-btn">←</div>
+            <div style="font-family:'Space Mono',monospace;font-size:13px;">Add Transaction</div>
+          </div>
+          <div class="tabs">
+            <div class="tab"><div class="tab-ic"></div>Manual</div>
+            <div class="tab on"><div class="tab-ic circ"></div>Voice</div>
+            <div class="tab"><div class="tab-ic"></div>Upload</div>
+          </div>
+          <div style="padding:16px 20px;display:flex;flex-direction:column;align-items:center;gap:14px;">
+            <div style="font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;">TRY SAYING</div>
+            <div style="width:100%;border:var(--border-l);border-radius:10px;padding:10px 12px;font-size:9px;color:var(--mid);line-height:1.7;background:var(--lighter);">
+              "Paid ₹350 for lunch at Zomato"<br>
+              "Add 2000 grocery expense yesterday"<br>
+              "Received salary 82 thousand today"
+            </div>
+            <div style="width:88px;height:88px;border:2.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;">
+              <div style="position:absolute;width:108px;height:108px;border:1.5px dashed var(--light);border-radius:50%;"></div>
+              <div style="position:absolute;width:126px;height:126px;border:1px dashed #ddd;border-radius:50%;"></div>
+              <span style="font-size:28px;">🎙</span>
+            </div>
+            <div style="font-family:'Space Mono',monospace;font-size:11px;">Listening…</div>
+            <div style="width:100%;border:var(--border-l);border-radius:10px;padding:10px;font-size:10px;color:var(--mid);line-height:1.5;font-style:italic;">"I paid three hundred and forty rupees for lunch at Swiggy today"</div>
+            <!-- AI parsed with editable fields -->
+            <div class="apc">
+              <div class="apc-hd">
+                <div>
+                  <div class="apc-title">AI PARSED — REVIEW & EDIT</div>
+                  <div style="font-size:8px;opacity:.5;margin-top:2px;">Tap ✎ on any field to edit inline</div>
+                </div>
+                <div style="font-size:9px;opacity:.7;border-bottom:1px solid rgba(255,255,255,.3);">Edit all</div>
+              </div>
+              <div class="apc-row">
+                <div class="apc-key">Amount</div>
+                <div class="apc-val editing">₹340</div>
+                <div class="apc-edit on">✎ Editing</div>
+              </div>
+              <div class="apc-row">
+                <div class="apc-key">Merchant</div>
+                <div class="apc-val">Swiggy</div>
+                <div class="apc-edit">✎ Edit</div>
+              </div>
+              <div class="apc-row">
+                <div class="apc-key">Category</div>
+                <div class="apc-val">🍕 Food</div>
+                <div class="apc-edit">✎ Edit</div>
+              </div>
+              <div class="apc-row">
+                <div class="apc-key">Date</div>
+                <div class="apc-val">Today, 1:32 PM</div>
+                <div class="apc-edit">✎ Edit</div>
+              </div>
+              <div class="apc-row">
+                <div class="apc-key">Type</div>
+                <div class="apc-val">Expense</div>
+                <div class="apc-edit">✎ Edit</div>
+              </div>
+              <div class="conf-row">
+                <span>AI confidence</span>
+                <div class="conf-bar"><div class="conf-fill" style="width:92%"></div></div>
+                <span style="font-family:'Space Mono',monospace;">92%</span>
+              </div>
+            </div>
+            <div class="row2" style="width:100%">
+              <div class="btn-s btn-sm" style="flex:1">🔄 Re-record</div>
+              <div class="btn-p btn-sm" style="flex:2">✓ CONFIRM & SAVE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">3B — Voice</div>
+    </div>
+
+    <!-- 3C UPLOAD -->
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:var(--border-l);">
+            <div class="back-btn">←</div>
+            <div style="font-family:'Space Mono',monospace;font-size:13px;">Add Transaction</div>
+          </div>
+          <div class="tabs">
+            <div class="tab"><div class="tab-ic"></div>Manual</div>
+            <div class="tab"><div class="tab-ic circ"></div>Voice</div>
+            <div class="tab on"><div class="tab-ic"></div>Upload</div>
+          </div>
+          <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;">
+            <div class="upload-zone">
+              <div style="width:40px;height:40px;border:var(--border-l);border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--white);font-size:18px;">📄</div>
+              <div style="font-size:11px;color:var(--mid);">Drop receipt, bank statement or invoice</div>
+              <div style="font-size:9px;color:var(--light);">PDF · JPG · PNG · up to 10MB</div>
+              <div class="btn-p btn-sm">BROWSE FILES</div>
+            </div>
+            <div class="divider"><div class="dl"></div><span class="dt">or import from</span><div class="dl"></div></div>
+            <div class="src-row">
+              <div class="src-btn">📷 Camera</div>
+              <div class="src-btn">☁️ Drive</div>
+              <div class="src-btn">📧 Email</div>
+              <div class="src-btn">📁 Files</div>
+            </div>
+            <!-- Parsed results with inline edit -->
+            <div class="pp">
+              <div class="pp-hd"><span>AI Detected 4 Transactions</span><span style="opacity:.6">☑ Select all</span></div>
+              <!-- item 1 normal -->
+              <div class="pp-item">
+                <div class="pp-ck on"></div>
+                <div class="pp-info"><div class="pp-name">Amazon – Electronics</div><div class="pp-meta">Feb 20 · Auto: Shopping</div></div>
+                <div class="pp-amt">₹12,499</div>
+                <div class="pp-edit">✎</div>
+              </div>
+              <!-- item 2 expanded edit inline -->
+              <div style="background:var(--lighter);">
+                <div class="pp-item" style="background:transparent;border-bottom:1px solid var(--border-l);">
+                  <div class="pp-ck on"></div>
+                  <div class="pp-info"><div class="pp-name" style="color:var(--ink);font-weight:500;">Petrol – HP Pump</div><div class="pp-meta">Feb 19 · Auto: Travel</div></div>
+                  <div class="pp-amt">₹2,100</div>
+                  <div class="pp-edit on" style="border-color:var(--ink);color:var(--ink);">✎ Editing</div>
+                </div>
+                <div class="pp-expand">
+                  <div class="pp-ef"><div class="lbl">Amount</div><div class="pp-einp">₹2,100</div></div>
+                  <div class="pp-ef"><div class="lbl">Merchant</div><div class="pp-einp">HP Pump</div></div>
+                  <div class="pp-ef"><div class="lbl">Category</div><div class="pp-einp">Travel ▾</div></div>
+                  <div class="pp-ef"><div class="lbl">Date</div><div class="pp-einp">Feb 19 ▾</div></div>
+                  <div class="pp-ef"><div class="lbl">Type</div><div class="pp-einp">Expense ▾</div></div>
+                  <div class="pp-ef"><div class="lbl">Note</div><div class="pp-einp" style="color:#bbb">Optional…</div></div>
+                </div>
+              </div>
+              <!-- item 3 duplicate warning -->
+              <div class="pp-item" style="background:#fdf8f0;">
+                <div class="pp-ck"></div>
+                <div class="pp-info"><div class="pp-name">⚠ Possible Duplicate</div><div class="pp-meta" style="color:#a07040;">Similar txn found Feb 19</div></div>
+                <div class="pp-amt">₹1,499</div>
+                <div class="pp-edit">Review</div>
+              </div>
+              <!-- item 4 -->
+              <div class="pp-item">
+                <div class="pp-ck on"></div>
+                <div class="pp-info"><div class="pp-name">Swiggy – Dinner</div><div class="pp-meta">Feb 18 · Auto: Food</div></div>
+                <div class="pp-amt">₹520</div>
+                <div class="pp-edit">✎</div>
+              </div>
+            </div>
+            <div class="btn-p">IMPORT SELECTED (3)</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">3C — Upload / Scan</div>
+    </div>
+
+  </div>
+  <div class="ann-list">
+    <div class="ann"><div class="ann-dot">1</div>Account field removed from all 3 modes — no account integration</div>
+    <div class="ann"><div class="ann-dot">2</div>Voice: per-field "✎ Edit" taps to inline edit; AI confidence score shown</div>
+    <div class="ann"><div class="ann-dot">3</div>Upload: row-level expand shows inline edit fields without leaving the list</div>
+    <div class="ann"><div class="ann-dot">4</div>"Mark as Recurring" on manual auto-adds to Commitments tab</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     04 — ANALYTICS (fully expanded)
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label"><span class="num">04</span> Analytics & Predictions</div>
+  <div class="row-phones">
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px 8px;border-bottom:var(--border-l);display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-family:'Space Mono',monospace;font-size:14px;">Analytics</div>
+            <div style="padding:4px 10px;border:var(--border-l);border-radius:20px;font-size:9px;font-family:'Space Mono',monospace;color:var(--mid);">Feb 2026 ▾</div>
+          </div>
+          <div style="display:flex;border:var(--border-l);border-radius:8px;overflow:hidden;margin:8px 14px;">
+            <div style="flex:1;padding:6px;text-align:center;font-size:9px;font-family:'Space Mono',monospace;background:var(--ink);color:var(--white);">EXPENSES</div>
+            <div style="flex:1;padding:6px;text-align:center;font-size:9px;font-family:'Space Mono',monospace;color:var(--mid);">INCOME</div>
+            <div style="flex:1;padding:6px;text-align:center;font-size:9px;font-family:'Space Mono',monospace;color:var(--mid);">BOTH</div>
+          </div>
+          <div style="display:flex;gap:4px;padding:0 14px 8px;overflow:hidden;">
+            <div class="chip sel" style="flex:1;text-align:center;">Week</div>
+            <div class="chip" style="flex:1;text-align:center;">Month</div>
+            <div class="chip" style="flex:1;text-align:center;">Quarter</div>
+            <div class="chip" style="flex:1;text-align:center;">Year</div>
+            <div class="chip" style="flex:1;text-align:center;">All</div>
+          </div>
+          <div style="padding:0 14px;display:flex;flex-direction:column;gap:10px;padding-bottom:12px;">
+            <!-- income vs expense -->
+            <div class="ie-row">
+              <div class="ie"><div class="ie-l">INCOME</div><div class="ie-v">₹82,000</div><div class="ie-b"><div class="ie-f" style="width:100%"></div></div></div>
+              <div class="ie"><div class="ie-l">SPENT</div><div class="ie-v">₹39,420</div><div class="ie-b"><div class="ie-f" style="width:48%;background:#888"></div></div></div>
+            </div>
+            <!-- savings -->
+            <div class="savings-card">
+              <div style="font-size:8px;opacity:.5;font-family:'Space Mono',monospace;margin-bottom:3px;">SAVINGS RATE</div>
+              <div style="font-family:'Space Mono',monospace;font-size:22px;margin-bottom:6px;">52%</div>
+              <div style="height:5px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden;margin-bottom:5px;"><div style="height:100%;width:52%;background:rgba(255,255,255,.7);border-radius:3px;"></div></div>
+              <div style="font-size:9px;opacity:.6;">Saved ₹42,580 — best month in 6 months 🎉</div>
+            </div>
+            <!-- spending trend line -->
+            <div class="chart-card">
+              <div class="chart-title">Daily Spending Trend <span class="ctt">Feb</span></div>
+              <div style="display:flex;gap:10px;font-size:7px;color:var(--mid);font-family:'Space Mono',monospace;margin-bottom:5px;"><span>— Expense</span><span style="opacity:.5;">- - Income</span><span style="opacity:.4;">·· Forecast</span></div>
+              <div class="line-ch">
+                <svg viewBox="0 0 280 65" preserveAspectRatio="none">
+                  <polyline points="0,50 30,42 55,48 80,28 110,35 140,22 170,30 200,18 225,26 250,20 280,28" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+                  <polyline points="0,10 280,10" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>
+                  <polyline points="250,20 280,14" fill="none" stroke="#ccc" stroke-width="1.5" stroke-dasharray="3,3"/>
+                  <circle cx="200" cy="18" r="3" fill="#1a1a1a"/>
+                  <text x="204" y="14" font-size="7" fill="#888" font-family="Space Mono">peak</text>
+                </svg>
+              </div>
+              <div class="ch-lbl"><span>1</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>→30</span></div>
+            </div>
+            <!-- monthly comparison bar -->
+            <div class="chart-card">
+              <div class="chart-title">Monthly Comparison <span class="ctt">6 months</span></div>
+              <div class="bar-ch">
+                <div class="bg2"><div class="bf2" style="height:55%"></div><div class="bl2">Sep</div></div>
+                <div class="bg2"><div class="bf2" style="height:70%"></div><div class="bl2">Oct</div></div>
+                <div class="bg2"><div class="bf2" style="height:60%"></div><div class="bl2">Nov</div></div>
+                <div class="bg2"><div class="bf2" style="height:85%"></div><div class="bl2">Dec</div></div>
+                <div class="bg2"><div class="bf2" style="height:75%"></div><div class="bl2">Jan</div></div>
+                <div class="bg2"><div class="bf2 hi" style="height:48%"></div><div class="bl2" style="color:var(--ink);font-weight:700">Feb</div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);margin-top:5px;font-family:'Space Mono',monospace;border-top:1px solid var(--lighter);padding-top:5px;"><span>Avg ₹31.2k</span><span style="color:var(--ink);">Feb ₹18.2k ↓41%</span></div>
+            </div>
+            <!-- category donut -->
+            <div class="chart-card">
+              <div class="chart-title">Category Split</div>
+              <div class="donut-row">
+                <div class="donut-wrap">
+                  <svg viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="#e2ddd8" stroke-width="16"/>
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="#1a1a1a" stroke-width="16" stroke-dasharray="75 114" stroke-dashoffset="0"/>
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="#888" stroke-width="16" stroke-dasharray="38 114" stroke-dashoffset="-75"/>
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="#bbb" stroke-width="16" stroke-dasharray="22 114" stroke-dashoffset="-113"/>
+                    <text x="40" y="43" text-anchor="middle" font-size="9" font-family="Space Mono" fill="#1a1a1a">Split</text>
+                  </svg>
+                </div>
+                <div class="dleg">
+                  <div class="dli"><div class="dld" style="background:#1a1a1a"></div><span class="dln">🍕 Food</span><span class="dlp">40% · ₹7.9k</span></div>
+                  <div class="dli"><div class="dld" style="background:#888"></div><span class="dln">🚗 Travel</span><span class="dlp">22% · ₹4.4k</span></div>
+                  <div class="dli"><div class="dld" style="background:#bbb"></div><span class="dln">🏠 Rent</span><span class="dlp">18% · ₹3.6k</span></div>
+                  <div class="dli"><div class="dld" style="background:#e2ddd8;border:1px solid #ccc"></div><span class="dln">Others</span><span class="dlp">20% · ₹4.0k</span></div>
+                </div>
+              </div>
+              <div style="margin-top:6px;font-size:8px;padding:4px 6px;border-radius:5px;background:var(--lighter);color:var(--mid);">Tap any slice → drill into category transactions</div>
+            </div>
+            <!-- category vs budget bars -->
+            <div class="chart-card">
+              <div class="chart-title">Category vs Budget</div>
+              <div>
+                <div class="bc-row"><span style="font-size:14px;width:20px;">🍕</span><div style="flex:1"><div style="font-size:9px;margin-bottom:2px;">Food & Dining</div><div class="bc-bar"><div class="bc-f over" style="width:90%"></div></div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;"><span>₹7,920 spent</span><span>/ ₹8,000</span></div></div></div>
+                <div class="bc-row"><span style="font-size:14px;width:20px;">🚗</span><div style="flex:1"><div style="font-size:9px;margin-bottom:2px;">Travel</div><div class="bc-bar"><div class="bc-f" style="width:55%"></div></div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;"><span>₹4,400</span><span>/ ₹8,000</span></div></div></div>
+                <div class="bc-row"><span style="font-size:14px;width:20px;">🛍</span><div style="flex:1"><div style="font-size:9px;margin-bottom:2px;">Shopping</div><div class="bc-bar"><div class="bc-f warn" style="width:78%"></div></div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;"><span>₹3,100</span><span>/ ₹4,000</span></div></div></div>
+                <div class="bc-row"><span style="font-size:14px;width:20px;">🎬</span><div style="flex:1"><div style="font-size:9px;margin-bottom:2px;">Entertainment</div><div class="bc-bar"><div class="bc-f" style="width:32%"></div></div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;"><span>₹960</span><span>/ ₹3,000</span></div></div></div>
+              </div>
+            </div>
+            <!-- heatmap -->
+            <div class="chart-card">
+              <div class="chart-title">Spending Heatmap — Feb 2026</div>
+              <div class="hm-lbl"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+              <div class="hm-grid">
+                <div class="hm l1"></div><div class="hm l2"></div><div class="hm l1"></div><div class="hm l3"></div><div class="hm l2"></div><div class="hm l4"></div><div class="hm l2"></div>
+                <div class="hm l2"></div><div class="hm l1"></div><div class="hm l3"></div><div class="hm l1"></div><div class="hm l5"></div><div class="hm l3"></div><div class="hm l2"></div>
+                <div class="hm l3"></div><div class="hm l2"></div><div class="hm l1"></div><div class="hm l2"></div><div class="hm l3"></div><div class="hm l4"></div><div class="hm l1"></div>
+                <div class="hm l1"></div><div class="hm l3"></div><div class="hm l2"></div><div class="hm l1"></div><div class="hm l2"></div><div class="hm"></div><div class="hm"></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:3px;margin-top:6px;font-size:7px;color:var(--mid);font-family:'Space Mono',monospace;">
+                <span>Less</span><div class="hm" style="width:10px;height:10px;flex-shrink:0;"></div><div class="hm l1" style="width:10px;height:10px;flex-shrink:0;"></div><div class="hm l2" style="width:10px;height:10px;flex-shrink:0;"></div><div class="hm l3" style="width:10px;height:10px;flex-shrink:0;"></div><div class="hm l4" style="width:10px;height:10px;flex-shrink:0;"></div><div class="hm l5" style="width:10px;height:10px;flex-shrink:0;"></div><span>More</span>
+              </div>
+            </div>
+            <!-- top merchants -->
+            <div class="chart-card">
+              <div class="chart-title">Top Merchants</div>
+              <div class="merch-row"><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);width:16px;">#1</span><span style="flex:1;font-size:9px;">Swiggy</span><div style="width:60px;height:4px;background:var(--mid);border-radius:2px;"></div><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);">₹4.2k</span></div>
+              <div class="merch-row"><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);width:16px;">#2</span><span style="flex:1;font-size:9px;">Amazon</span><div style="width:48px;height:4px;background:var(--mid);border-radius:2px;"></div><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);">₹3.4k</span></div>
+              <div class="merch-row"><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);width:16px;">#3</span><span style="flex:1;font-size:9px;">HP Petrol</span><div style="width:36px;height:4px;background:var(--mid);border-radius:2px;"></div><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);">₹2.5k</span></div>
+              <div class="merch-row"><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);width:16px;">#4</span><span style="flex:1;font-size:9px;">Netflix</span><div style="width:20px;height:4px;background:var(--mid);border-radius:2px;"></div><span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);">₹1.3k</span></div>
+            </div>
+            <!-- day of week -->
+            <div class="chart-card">
+              <div class="chart-title">By Day of Week</div>
+              <div class="bar-ch" style="height:52px;">
+                <div class="bg2"><div class="bf2" style="height:40%"></div><div class="bl2">Mon</div></div>
+                <div class="bg2"><div class="bf2" style="height:35%"></div><div class="bl2">Tue</div></div>
+                <div class="bg2"><div class="bf2" style="height:50%"></div><div class="bl2">Wed</div></div>
+                <div class="bg2"><div class="bf2" style="height:45%"></div><div class="bl2">Thu</div></div>
+                <div class="bg2"><div class="bf2 hi" style="height:90%"></div><div class="bl2" style="color:var(--ink)">Fri</div></div>
+                <div class="bg2"><div class="bf2 hi" style="height:100%"></div><div class="bl2" style="color:var(--ink)">Sat</div></div>
+                <div class="bg2"><div class="bf2" style="height:65%"></div><div class="bl2">Sun</div></div>
+              </div>
+              <div style="font-size:8px;color:var(--mid);margin-top:4px;">You spend 2× more on weekends 📅</div>
+            </div>
+            <!-- AI prediction -->
+            <div class="pred-card">
+              <div class="pred-ai">AI</div>
+              <div>
+                <div class="pred-txt">At current pace, you'll spend</div>
+                <span class="pred-hl">₹42,800 this month</span>
+                <div class="pred-txt">₹2,800 over budget. Cut food by 15% to save ₹3k. Weekend spending drives 60% of the overage.</div>
+              </div>
+            </div>
+            <!-- AI insights -->
+            <div class="chart-card">
+              <div class="chart-title">AI Insights <span class="ai-badge">AI</span></div>
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <div style="font-size:9px;padding:6px 8px;border-left:2px solid var(--ink);line-height:1.5;">🍕 Food up 22% vs last month — mostly weekday lunch orders</div>
+                <div style="font-size:9px;padding:6px 8px;border-left:2px solid #bbb;line-height:1.5;">🎬 Entertainment well under budget — ₹2,040 left to spend</div>
+                <div style="font-size:9px;padding:6px 8px;border-left:2px solid var(--mid);line-height:1.5;">📅 Your best saving month was Aug — replicate that pattern</div>
+                <div style="font-size:9px;padding:6px 8px;border-left:2px solid var(--light);line-height:1.5;">💰 Save ₹5k more/mo to hit Emergency Fund goal 2 months earlier</div>
+              </div>
+            </div>
+          </div>
+          <div class="bnav">
+            <div class="ni"><div class="ni-ic"></div>Home</div>
+            <div class="ni on"><div class="ni-ic"></div>Analytics</div>
+            <div class="ni" style="flex:1.4"><div class="ni-fab">+</div><div style="margin-top:28px;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid)">Add</div></div>
+            <div class="ni"><div class="ni-ic"></div>Plans</div>
+            <div class="ni"><div class="ni-ic circ"></div>Profile</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">Analytics (full)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     05 — PLANS
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label"><span class="num">05</span> Plans — Goals · Budget · Commitments</div>
+  <div class="row-phones">
+    <!-- Goals -->
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:var(--border-l);"><div style="font-family:'Space Mono',monospace;font-size:14px;">Plans</div><div class="btn-p btn-sm">+ New</div></div>
+          <div class="sub-tabs"><div class="sub-tab on">Goals</div><div class="sub-tab">Budget</div><div class="sub-tab">Commitments</div></div>
+          <div style="padding:10px 14px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;gap:8px;">
+              <div style="flex:1;border:var(--border-l);border-radius:10px;padding:8px;background:var(--white);"><div style="font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;">ACTIVE</div><div style="font-family:'Space Mono',monospace;font-size:18px;margin-top:2px;">4</div></div>
+              <div style="flex:1;border:var(--border-l);border-radius:10px;padding:8px;background:var(--white);"><div style="font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;">SAVED</div><div style="font-family:'Space Mono',monospace;font-size:18px;margin-top:2px;">₹2.8L</div></div>
+              <div style="flex:1;border:var(--border-l);border-radius:10px;padding:8px;background:var(--white);"><div style="font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;">DONE</div><div style="font-family:'Space Mono',monospace;font-size:18px;margin-top:2px;">2 🎉</div></div>
+            </div>
+            <div class="ai-tip"><span class="ai-badge" style="height:fit-content;white-space:nowrap;">AI</span><span>Save ₹5,000/month to hit your Emergency Fund goal 2 months earlier.</span></div>
+            <div class="goal-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div><div style="font-size:18px;margin-bottom:2px;">🚨</div><div style="font-size:11px;font-weight:500;">Emergency Fund</div><div style="font-size:9px;color:var(--mid);">₹3L of ₹5L target</div></div><div class="tag">On track</div></div>
+              <div class="gp"><div class="gp-f hi" style="width:60%"></div></div>
+              <div class="goal-meta"><span>60% · ₹2L to go</span><span>~8 months</span></div>
+              <div style="font-size:9px;color:var(--mid);margin-top:4px;">Contribution: ₹5,000/month</div>
+              <div class="goal-actions"><div class="gbtn">History</div><div class="gbtn">Edit</div><div class="gbtn p">+ Add Money</div></div>
+            </div>
+            <div class="goal-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div><div style="font-size:18px;margin-bottom:2px;">✈️</div><div style="font-size:11px;font-weight:500;">Europe Trip</div><div style="font-size:9px;color:var(--mid);">₹45k of ₹1.5L target</div></div><div class="tag">Behind</div></div>
+              <div class="gp"><div class="gp-f" style="width:30%"></div></div>
+              <div class="goal-meta"><span>30% · ₹1.05L to go</span><span>Dec 2026</span></div>
+              <div class="goal-actions"><div class="gbtn">History</div><div class="gbtn">Edit</div><div class="gbtn p">+ Add Money</div></div>
+            </div>
+            <div class="goal-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div><div style="font-size:18px;margin-bottom:2px;">📱</div><div style="font-size:11px;font-weight:500;">New MacBook</div><div style="font-size:9px;color:var(--mid);">₹90k of ₹1.2L target</div></div><div class="tag">Almost!</div></div>
+              <div class="gp"><div class="gp-f hi" style="width:75%"></div></div>
+              <div class="goal-meta"><span>75% · ₹30k to go</span><span>~2 months</span></div>
+              <div class="goal-actions"><div class="gbtn">History</div><div class="gbtn">Edit</div><div class="gbtn p">+ Add Money</div></div>
+            </div>
+            <div class="goal-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div><div style="font-size:18px;margin-bottom:2px;">🏠</div><div style="font-size:11px;font-weight:500;">House Down Payment</div><div style="font-size:9px;color:var(--mid);">₹80k of ₹10L target</div></div><div class="tag">Just started</div></div>
+              <div class="gp"><div class="gp-f" style="width:8%"></div></div>
+              <div class="goal-meta"><span>8% · ₹9.2L to go</span><span>~4 years</span></div>
+              <div class="goal-actions"><div class="gbtn">History</div><div class="gbtn">Edit</div><div class="gbtn p">+ Add Money</div></div>
+            </div>
+            <div style="text-align:center;padding:8px;font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;">+ ADD NEW GOAL</div>
+          </div>
+          <div class="bnav"><div class="ni"><div class="ni-ic"></div>Home</div><div class="ni"><div class="ni-ic"></div>Analytics</div><div class="ni" style="flex:1.4"><div class="ni-fab">+</div><div style="margin-top:28px;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid)">Add</div></div><div class="ni on"><div class="ni-ic"></div>Plans</div><div class="ni"><div class="ni-ic circ"></div>Profile</div></div>
+        </div>
+      </div>
+      <div class="phone-caption">5A — Goals</div>
+    </div>
+
+    <!-- Budget -->
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:var(--border-l);"><div style="font-family:'Space Mono',monospace;font-size:14px;">Plans</div><div class="btn-p btn-sm">+ New</div></div>
+          <div class="sub-tabs"><div class="sub-tab">Goals</div><div class="sub-tab on">Budget</div><div class="sub-tab">Commitments</div></div>
+          <div style="padding:10px 14px;display:flex;flex-direction:column;gap:10px;">
+            <div class="budget-sum">
+              <div style="font-size:8px;opacity:.5;font-family:'Space Mono',monospace;margin-bottom:3px;">TOTAL BUDGET — FEB 2026</div>
+              <div style="font-family:'Space Mono',monospace;font-size:18px;margin-bottom:5px;">₹18,200 / ₹40,000</div>
+              <div style="height:5px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:45%;background:rgba(255,255,255,.7);border-radius:3px;"></div></div>
+              <div style="font-size:8px;opacity:.5;display:flex;justify-content:space-between;"><span>45% used · 14 days left</span><span>₹21.8k remaining</span></div>
+            </div>
+            <div class="ai-tip"><span class="ai-badge" style="height:fit-content;white-space:nowrap;">AI</span><span>Food is 90% used with 14 days to go. You've ordered food 18 times this month.</span></div>
+            <div class="card">
+              <div style="padding:10px 12px;border-bottom:var(--border-l);display:flex;justify-content:space-between;align-items:center;"><div class="sec-title" style="margin:0;">Category Budgets</div><div style="font-size:9px;color:var(--mid);">1st–28th Feb</div></div>
+              <div style="padding:6px 12px;">
+                <div class="bc-row"><span style="font-size:14px;width:20px;flex-shrink:0;">🍕</span><div style="flex:1"><div style="font-size:9px;margin-bottom:2px;">Food & Dining</div><div class="bc-bar"><div class="bc-f over" style="width:90%"></div></div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;"><span style="color:var(--ink);font-weight:500">₹7,920</span><span>/ ₹8,000</span></div></div><div style="font-size:8px;color:var(--mid);border:1px solid var(--light);border-radius:4px;padding:1px 5px;margin-left:6px;">Edit</div></div>
+                <div class="bc-row"><span style="font-size:14px;width:20px;flex-shrink:0;">🚗</span><div style="flex:1"><div style="font-size:9px;margin-bottom:2px;">Travel</div><div class="bc-bar"><div class="bc-f" style="width:55%"></div></div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;"><span>₹4,400</span><span>/ ₹8,000</span></div></div><div style="font-size:8px;color:var(--mid);border:1px solid var(--light);border-radius:4px;padding:1px 5px;margin-left:6px;">Edit</div></div>
+                <div class="bc-row"><span style="font-size:14px;width:20px;flex-shrink:0;">🛍</span><div style="flex:1"><div style="font-size:9px;margin-bottom:2px;">Shopping</div><div class="bc-bar"><div class="bc-f warn" style="width:78%"></div></div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;"><span>₹3,100</span><span>/ ₹4,000</span></div></div><div style="font-size:8px;color:var(--mid);border:1px solid var(--light);border-radius:4px;padding:1px 5px;margin-left:6px;">Edit</div></div>
+                <div class="bc-row"><span style="font-size:14px;width:20px;flex-shrink:0;">🎬</span><div style="flex:1"><div style="font-size:9px;margin-bottom:2px;">Entertainment</div><div class="bc-bar"><div class="bc-f" style="width:32%"></div></div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;"><span>₹960</span><span>/ ₹3,000</span></div></div><div style="font-size:8px;color:var(--mid);border:1px solid var(--light);border-radius:4px;padding:1px 5px;margin-left:6px;">Edit</div></div>
+                <div class="bc-row"><span style="font-size:14px;width:20px;flex-shrink:0;">💊</span><div style="flex:1"><div style="font-size:9px;margin-bottom:2px;">Health</div><div class="bc-bar"><div class="bc-f" style="width:10%"></div></div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;"><span>₹300</span><span>/ ₹3,000</span></div></div><div style="font-size:8px;color:var(--mid);border:1px solid var(--light);border-radius:4px;padding:1px 5px;margin-left:6px;">Edit</div></div>
+                <div style="padding-top:8px;"><div class="src-btn" style="justify-content:center;height:28px;font-size:9px;border-radius:6px;">+ Add Category Budget</div></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:var(--border-l);border-radius:var(--r);background:var(--white);">
+              <div><div style="font-size:10px;">Rollover unused budget</div><div style="font-size:8px;color:var(--mid);">Carry remaining to next month</div></div>
+              <div class="tog on"></div>
+            </div>
+          </div>
+          <div class="bnav"><div class="ni"><div class="ni-ic"></div>Home</div><div class="ni"><div class="ni-ic"></div>Analytics</div><div class="ni" style="flex:1.4"><div class="ni-fab">+</div><div style="margin-top:28px;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid)">Add</div></div><div class="ni on"><div class="ni-ic"></div>Plans</div><div class="ni"><div class="ni-ic circ"></div>Profile</div></div>
+        </div>
+      </div>
+      <div class="phone-caption">5B — Budget</div>
+    </div>
+
+    <!-- Commitments -->
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:var(--border-l);"><div style="font-family:'Space Mono',monospace;font-size:14px;">Plans</div><div class="btn-p btn-sm">+ New</div></div>
+          <div class="sub-tabs"><div class="sub-tab">Goals</div><div class="sub-tab">Budget</div><div class="sub-tab on">Commitments</div></div>
+          <div style="padding:10px 14px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;gap:8px;">
+              <div style="flex:1;border:var(--border-l);border-radius:10px;padding:8px;background:var(--white);"><div style="font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;">MONTHLY TOTAL</div><div style="font-family:'Space Mono',monospace;font-size:14px;margin-top:2px;">₹22,348</div></div>
+              <div style="flex:1;border:var(--border-l);border-radius:10px;padding:8px;background:var(--white);"><div style="font-size:8px;color:var(--mid);font-family:'Space Mono',monospace;">DUE THIS WEEK</div><div style="font-family:'Space Mono',monospace;font-size:14px;margin-top:2px;">3 items</div></div>
+            </div>
+            <div class="sec-title">UPCOMING</div>
+            <div class="commit-card" style="border:1.5px solid var(--ink);">
+              <div class="cc-top"><div class="cc-ic">🚗</div><div class="cc-info"><div class="cc-name">Car EMI</div><div class="cc-due" style="color:#a07040;">⚠ Due TOMORROW</div></div><div class="cc-amt">₹8,500</div></div>
+              <div class="cc-bottom"><div class="cc-tag">EMI</div><div class="cc-tag">Monthly · 26th</div><div style="font-size:8px;color:var(--mid);flex:1;text-align:right;">🔔 Reminded</div></div>
+            </div>
+            <div class="commit-card">
+              <div class="cc-top"><div class="cc-ic">🎵</div><div class="cc-info"><div class="cc-name">Spotify Premium</div><div class="cc-due">Due in 3 days</div></div><div class="cc-amt">₹199</div></div>
+              <div class="cc-bottom"><div class="cc-tag">Subscription</div><div class="cc-tag">28th</div><div style="font-size:8px;color:var(--mid);flex:1;text-align:right;">🔔 1 day before</div></div>
+            </div>
+            <div class="sec-title" style="margin-top:4px;">RECURRING</div>
+            <div class="commit-card">
+              <div class="cc-top"><div class="cc-ic">🥛</div><div class="cc-info"><div class="cc-name">Milk – Daily</div><div class="cc-due">₹66/day · Every morning</div></div><div class="cc-amt">₹2,000/mo</div></div>
+              <div class="cc-bottom"><div class="cc-tag">Daily</div><div class="cc-tag">Cash</div><div style="font-size:8px;color:var(--mid);flex:1;text-align:right;">🔕 No reminder</div></div>
+            </div>
+            <div class="commit-card">
+              <div class="cc-top"><div class="cc-ic">🏠</div><div class="cc-info"><div class="cc-name">House Rent</div><div class="cc-due">Due 1st of month</div></div><div class="cc-amt">₹18,000</div></div>
+              <div class="cc-bottom"><div class="cc-tag">Monthly</div><div class="cc-tag">NEFT</div><div style="font-size:8px;color:var(--mid);flex:1;text-align:right;">🔔 3 days before</div></div>
+            </div>
+            <div class="commit-card">
+              <div class="cc-top"><div class="cc-ic">📱</div><div class="cc-info"><div class="cc-name">Mobile Plan</div><div class="cc-due">Quarterly · Next: Apr</div></div><div class="cc-amt">₹719/qtr</div></div>
+              <div class="cc-bottom"><div class="cc-tag">Quarterly</div><div style="font-size:8px;color:var(--mid);flex:1;text-align:right;">🔔 1 week before</div></div>
+            </div>
+            <div class="commit-card">
+              <div class="cc-top"><div class="cc-ic">🎬</div><div class="cc-info"><div class="cc-name">Netflix</div><div class="cc-due">Monthly · 24th</div></div><div class="cc-amt">₹649</div></div>
+              <div class="cc-bottom"><div class="cc-tag">Subscription</div><div style="font-size:8px;color:var(--mid);flex:1;text-align:right;">🔕 No reminder</div></div>
+            </div>
+            <div style="text-align:center;padding:8px;font-size:9px;color:var(--mid);font-family:'Space Mono',monospace;">+ ADD COMMITMENT / SUBSCRIPTION / EMI</div>
+          </div>
+          <div class="bnav"><div class="ni"><div class="ni-ic"></div>Home</div><div class="ni"><div class="ni-ic"></div>Analytics</div><div class="ni" style="flex:1.4"><div class="ni-fab">+</div><div style="margin-top:28px;font-size:8px;font-family:'Space Mono',monospace;color:var(--mid)">Add</div></div><div class="ni on"><div class="ni-ic"></div>Plans</div><div class="ni"><div class="ni-ic circ"></div>Profile</div></div>
+        </div>
+      </div>
+      <div class="phone-caption">5C — Commitments</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     06 — FAMILY
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label"><span class="num">06</span> Family Wallet — Connected Members</div>
+  <div class="row-phones">
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:var(--border-l);"><div style="font-family:'Space Mono',monospace;font-size:14px;">Family Wallet</div><div class="btn-p btn-sm">+ Invite</div></div>
+          <div style="display:flex;gap:6px;padding:8px 14px;border-bottom:var(--border-l);">
+            <div style="flex:1;padding:7px 4px;text-align:center;font-size:9px;font-family:'Space Mono',monospace;background:var(--ink);color:var(--white);border-radius:8px;">Combined</div>
+            <div style="flex:1;padding:7px 4px;text-align:center;font-size:9px;font-family:'Space Mono',monospace;color:var(--mid);border:var(--border-l);border-radius:8px;">My View</div>
+            <div style="flex:1;padding:7px 4px;text-align:center;font-size:9px;font-family:'Space Mono',monospace;color:var(--mid);border:var(--border-l);border-radius:8px;">Per Member</div>
+          </div>
+          <div style="padding:10px 14px;display:flex;flex-direction:column;gap:10px;">
+            <div class="comb-card">
+              <div style="font-size:8px;opacity:.5;font-family:'Space Mono',monospace;margin-bottom:3px;">COMBINED BALANCE — FEBRUARY</div>
+              <div style="font-family:'Space Mono',monospace;font-size:18px;margin-bottom:8px;">₹2,08,340</div>
+              <div class="mb-row"><div class="mb-name">Rahul</div><div class="mb-bar"><div class="mb-f" style="width:68%"></div></div><div style="font-size:8px;opacity:.7;font-family:'Space Mono',monospace;">₹1,42,580</div></div>
+              <div class="mb-row"><div class="mb-name">Priya</div><div class="mb-bar"><div class="mb-f alt" style="width:32%"></div></div><div style="font-size:8px;opacity:.7;font-family:'Space Mono',monospace;">₹65,760</div></div>
+            </div>
+            <div class="sec-title">MEMBERS</div>
+            <div class="fam-m"><div class="fam-av">R</div><div style="flex:1"><div style="font-size:11px;font-weight:500;">Rahul Sharma</div><div style="font-size:9px;color:var(--mid);">Admin · You</div></div><div style="font-family:'Space Mono',monospace;font-size:11px;">₹39,420 spent</div></div>
+            <div class="fam-m"><div class="fam-av">P</div><div style="flex:1"><div style="font-size:11px;font-weight:500;">Priya Sharma</div><div style="font-size:9px;color:var(--mid);">Partner · Active</div></div><div style="font-family:'Space Mono',monospace;font-size:11px;">₹18,200 spent</div></div>
+            <div style="border:1.5px dashed var(--mid);border-radius:var(--r);padding:10px;text-align:center;font-size:9px;color:var(--mid);">+ Invite family member via link or email</div>
+            <div class="card" style="overflow:visible;">
+              <div style="padding:10px 12px;border-bottom:var(--border-l);"><div class="sec-title" style="margin:0;">Sharing Permissions</div></div>
+              <div style="padding:10px 12px;display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;"><div>Share my transactions<div style="font-size:8px;color:var(--mid)">Priya can see your spends</div></div><div class="tog on"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;"><div>Share my balance<div style="font-size:8px;color:var(--mid)">Show account totals</div></div><div class="tog on"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;"><div>Share goals<div style="font-size:8px;color:var(--mid)">See each other's goals</div></div><div class="tog"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;"><div>Priya can add transactions<div style="font-size:8px;color:var(--mid)">for your wallet</div></div><div class="tog"></div></div>
+              </div>
+            </div>
+            <div class="sec-title">COMBINED TRANSACTIONS</div>
+            <div class="card">
+              <div class="merged-txn"><div class="merged-ic">🍕</div><div style="flex:1"><div style="font-size:9px;">Swiggy – Family Dinner</div><div style="font-size:8px;color:var(--mid);">Rahul · Today</div></div><div class="merged-badge">Rahul</div><div style="font-family:'Space Mono',monospace;font-size:10px;margin-left:6px;">-₹1,200</div></div>
+              <div class="merged-txn" style="background:var(--lighter);"><div class="merged-ic">🛒</div><div style="flex:1"><div style="font-size:9px;">BigBasket Groceries</div><div style="font-size:8px;color:var(--mid);">Rahul + Priya · Yesterday</div></div><div class="merged-badge" style="background:var(--ink);color:var(--white);border-color:var(--ink);">Merged</div><div style="font-family:'Space Mono',monospace;font-size:10px;margin-left:6px;">-₹4,800</div></div>
+              <div style="padding:5px 10px;font-size:8px;color:var(--mid);border-top:1px solid var(--lighter);border-bottom:1px solid var(--lighter);">↑ Merged: Both added grocery txn same day — combined & shown once</div>
+              <div class="merged-txn"><div class="merged-ic">⛽</div><div style="flex:1"><div style="font-size:9px;">Petrol – HP Pump</div><div style="font-size:8px;color:var(--mid);">Priya · Feb 23</div></div><div class="merged-badge">Priya</div><div style="font-family:'Space Mono',monospace;font-size:10px;margin-left:6px;">-₹2,100</div></div>
+              <div class="merged-txn"><div class="merged-ic">💼</div><div style="flex:1"><div style="font-size:9px;">Priya Salary</div><div style="font-size:8px;color:var(--mid);">Priya · Feb 25</div></div><div class="merged-badge">Priya</div><div style="font-family:'Space Mono',monospace;font-size:10px;margin-left:6px;color:#444">+₹55,000</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">6 — Family Wallet</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     07 — SETTINGS (full)
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label"><span class="num">07</span> Settings & Profile</div>
+  <div class="row-phones">
+    <!-- Main settings -->
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px 8px;border-bottom:var(--border-l);"><div style="font-family:'Space Mono',monospace;font-size:14px;">Settings</div></div>
+          <div class="pc">
+            <div class="pc-av">R</div>
+            <div style="flex:1"><div style="font-family:'Space Mono',monospace;font-size:13px;margin-bottom:2px;">Rahul Sharma</div><div style="font-size:9px;color:var(--mid);margin-bottom:3px;">rahul@email.com</div><div style="font-size:8px;color:var(--mid);border:1px solid var(--mid);border-radius:4px;padding:1px 6px;display:inline-block;">Free Plan</div></div>
+            <div class="btn-p btn-sm">Edit</div>
+          </div>
+
+          <div class="sett-sec">
+            <div class="sec-title">Finance</div>
+            <div class="sett-grp">
+              <div class="sett-row"><div class="sett-ic">💱</div><div class="sett-lbl"><div>Primary Currency</div></div><div class="sett-val">₹ INR</div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">📅</div><div class="sett-lbl"><div>Budget Cycle Start</div><div class="sett-sub">When your month begins</div></div><div class="sett-val">1st</div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">👨‍👩‍👧</div><div class="sett-lbl"><div>Family Wallet</div><div class="sett-sub">2 members connected</div></div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">📤</div><div class="sett-lbl"><div>Invite Members</div><div class="sett-sub">Share via link or email</div></div><div class="sett-arr">›</div></div>
+            </div>
+          </div>
+
+          <div class="sett-sec">
+            <div class="sec-title">AI & Voice</div>
+            <div class="sett-grp">
+              <div class="sett-row"><div class="sett-ic">🎙</div><div class="sett-lbl"><div>AI Voice-over</div><div class="sett-sub">Narrate insights aloud</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">🗣</div><div class="sett-lbl"><div>Voice Language</div></div><div class="sett-val">English (IN)</div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">🔮</div><div class="sett-lbl"><div>AI Predictions</div><div class="sett-sub">Budget forecasts & alerts</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">🤖</div><div class="sett-lbl"><div>Auto-categorise</div><div class="sett-sub">AI suggests categories on entry</div></div><div class="tog on"></div></div>
+            </div>
+          </div>
+
+          <div class="sett-sec">
+            <div class="sec-title">Appearance</div>
+            <div class="sett-grp">
+              <div class="sett-row"><div class="sett-ic">🎨</div><div class="sett-lbl"><div>Theme</div></div>
+                <div class="type-tog2"><div class="to2">Light</div><div class="to2 on">System</div><div class="to2">Dark</div></div>
+              </div>
+              <div class="sett-row"><div class="sett-ic">🌐</div><div class="sett-lbl"><div>Language</div></div><div class="sett-val">English</div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">🕐</div><div class="sett-lbl"><div>Clock Format</div></div><div style="display:flex;gap:4px;"><div class="chip sel">12h</div><div class="chip">24h</div></div></div>
+              <div class="sett-row"><div class="sett-ic">📆</div><div class="sett-lbl"><div>First Day of Week</div></div><div style="display:flex;gap:4px;"><div class="chip sel">Mon</div><div class="chip">Sun</div></div></div>
+            </div>
+          </div>
+
+          <div class="sett-sec">
+            <div class="sec-title">Security</div>
+            <div class="sett-grp">
+              <div class="sett-row"><div class="sett-ic">👤</div><div class="sett-lbl"><div>Biometric Lock</div><div class="sett-sub">Face ID / Fingerprint on open</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">🔢</div><div class="sett-lbl"><div>Change PIN</div><div class="sett-sub">4-digit app PIN</div></div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">🔒</div><div class="sett-lbl"><div>Lock Sensitive Actions</div><div class="sett-sub">PIN required to delete / export</div></div><div class="tog on"></div></div>
+            </div>
+          </div>
+
+          <div class="sett-sec">
+            <div class="sec-title">Notifications</div>
+            <div class="sett-grp">
+              <div class="sett-row" style="background:var(--lighter);"><div class="sett-ic">🔔</div><div class="sett-lbl"><div style="font-weight:500;">All Notifications</div><div class="sett-sub">Master toggle</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">📊</div><div class="sett-lbl"><div>AI Analytics Alerts</div><div class="sett-sub">Spending patterns & predictions</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">💰</div><div class="sett-lbl"><div>Budget Alerts</div><div class="sett-sub">At 80% and 100% usage</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">📅</div><div class="sett-lbl"><div>Commitment Reminders</div><div class="sett-sub">Upcoming bills & EMIs</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">🎯</div><div class="sett-lbl"><div>Goal Milestones</div><div class="sett-sub">At 25%, 50%, 75%, 100%</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">📝</div><div class="sett-lbl"><div>Daily Expense Reminder</div><div class="sett-sub">Prompt to log daily spend</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">⏰</div><div class="sett-lbl"><div>Reminder Time</div><div class="sett-sub">When to nudge you</div></div>
+                <div style="border:var(--border-l);border-radius:6px;height:24px;padding:0 8px;font-size:9px;background:var(--lighter);display:flex;align-items:center;color:var(--mid);">9:00 PM ▾</div>
+              </div>
+              <div class="sett-row"><div class="sett-ic">👨‍👩‍👧</div><div class="sett-lbl"><div>Family Activity</div><div class="sett-sub">When members add transactions</div></div><div class="tog"></div></div>
+              <div class="sett-row"><div class="sett-ic">📱</div><div class="sett-lbl"><div>Weekly Summary</div><div class="sett-sub">Every Sunday morning</div></div><div class="tog on"></div></div>
+            </div>
+          </div>
+
+          <div class="sett-sec">
+            <div class="sec-title">Data & Backup</div>
+            <div class="sett-grp">
+              <div class="sett-row"><div class="sett-ic">☁️</div><div class="sett-lbl"><div>Auto Backup</div><div class="sett-sub">Google Drive / iCloud</div></div><div class="tog on"></div></div>
+              <div class="sett-row"><div class="sett-ic">🔄</div><div class="sett-lbl"><div>Backup Frequency</div></div><div class="sett-val">Daily</div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">📥</div><div class="sett-lbl"><div>Export Data</div><div class="sett-sub">CSV, PDF, Excel</div></div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">📤</div><div class="sett-lbl"><div>Import Data</div><div class="sett-sub">From other apps or CSV</div></div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">✅</div><div class="sett-lbl"><div>Last Backup</div><div class="sett-sub">Today at 2:30 AM</div></div></div>
+            </div>
+          </div>
+
+          <div class="sett-sec">
+            <div class="sec-title">Support & About</div>
+            <div class="sett-grp">
+              <div class="sett-row"><div class="sett-ic">📬</div><div class="sett-lbl"><div>Contact Us</div></div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">⭐</div><div class="sett-lbl"><div>Rate the App</div></div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">📖</div><div class="sett-lbl"><div>Privacy Policy</div></div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">📋</div><div class="sett-lbl"><div>Terms of Service</div></div><div class="sett-arr">›</div></div>
+              <div class="sett-row"><div class="sett-ic">ℹ️</div><div class="sett-lbl"><div>App Version</div></div><div class="sett-val">v1.0.0</div></div>
+            </div>
+          </div>
+
+          <!-- Feedback reward card -->
+          <div style="padding:0 14px 10px;">
+            <div class="fb-reward">
+              <div style="font-family:'Space Mono',monospace;font-size:12px;margin-bottom:4px;">💡 Share Your Ideas</div>
+              <div style="font-size:9px;opacity:.7;line-height:1.5;margin-bottom:8px;">Suggest a feature improvement and earn rewards. Your feedback shapes what we build next.</div>
+              <div class="btn-p btn-sm" style="border:1.5px solid rgba(255,255,255,.3);">GIVE FEEDBACK →</div>
+              <div style="font-size:8px;opacity:.45;margin-top:6px;">🎁 Top contributors get 5 free PDF uploads/month</div>
+            </div>
+          </div>
+
+          <div style="padding:0 14px 6px;">
+            <div style="border:1.5px solid #888;border-radius:10px;padding:11px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;color:#666;">SIGN OUT</div>
+          </div>
+          <div style="text-align:center;padding:6px 14px 16px;font-size:9px;color:#aaa;">Delete Account</div>
+        </div>
+      </div>
+      <div class="phone-caption">7A — Settings (Full)</div>
+    </div>
+
+    <!-- Feedback screen -->
+    <div class="phone-wrap">
+      <div class="phone expanded">
+        <div class="phone-notch"></div>
+        <div class="screen">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:var(--border-l);"><div class="back-btn">←</div><div style="font-family:'Space Mono',monospace;font-size:13px;">Share Feedback</div></div>
+          <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px;">
+            <div style="border:var(--border);border-radius:var(--r);padding:12px;background:var(--ink);color:var(--white);display:flex;gap:10px;align-items:center;">
+              <span style="font-size:24px;flex-shrink:0;">🎁</span>
+              <div><div style="font-family:'Space Mono',monospace;font-size:11px;margin-bottom:2px;">Earn 5 free PDF uploads</div><div style="font-size:9px;opacity:.7;line-height:1.4;">Submit honest feedback → we'll unlock 5 extra PDF uploads on your account every month.</div></div>
+            </div>
+            <div class="col1"><div class="lbl">Overall Rating</div>
+              <div style="display:flex;gap:8px;margin-top:4px;">
+                <div style="width:32px;height:32px;border:var(--border-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">⭐</div>
+                <div style="width:32px;height:32px;border:var(--border-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">⭐</div>
+                <div style="width:32px;height:32px;border:var(--border-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">⭐</div>
+                <div style="width:32px;height:32px;border:var(--border-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">⭐</div>
+                <div style="width:32px;height:32px;border:1px solid var(--light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--light);">☆</div>
+              </div>
+            </div>
+            <div class="col1"><div class="lbl">What are you most happy with?</div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;">
+                <div class="chip sel">Voice Input</div><div class="chip">Analytics</div><div class="chip">UI Design</div><div class="chip">AI Insights</div><div class="chip">PDF Scan</div><div class="chip">Goals</div>
+              </div>
+            </div>
+            <div class="col1"><div class="lbl">What should we improve?</div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;">
+                <div class="chip">Speed</div><div class="chip sel">More categories</div><div class="chip">Better charts</div><div class="chip">Family sharing</div><div class="chip">Widgets</div>
+              </div>
+            </div>
+            <div class="col1"><div class="lbl">Your suggestions (optional)</div>
+              <div style="border:var(--border-l);border-radius:10px;padding:10px;font-size:10px;color:#bbb;background:var(--lighter);height:80px;">Describe your idea in detail. The more specific, the better chance it gets built…</div>
+            </div>
+            <div class="col1"><div class="lbl">Top Feature Requests (rank them)</div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px;">
+                <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border:var(--border-l);border-radius:8px;background:var(--white);font-size:9px;"><span style="color:var(--mid);">⠿</span><span style="flex:1">SMS/UPI auto-import</span><span style="font-size:8px;color:var(--mid);">1st</span></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border:var(--border-l);border-radius:8px;background:var(--white);font-size:9px;"><span style="color:var(--mid);">⠿</span><span style="flex:1">Watch app</span><span style="font-size:8px;color:var(--mid);">2nd</span></div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border:var(--border-l);border-radius:8px;font-size:10px;background:var(--lighter);">
+              <div>Email me with updates</div><div class="tog on"></div>
+            </div>
+            <div class="btn-p">SUBMIT & UNLOCK REWARD</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">7B — Feedback</div>
+    </div>
+
+    <!-- Change PIN screen -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" style="display:flex;flex-direction:column;">
+          <div class="sb"><span>9:41</span><div class="sb-ic"><div class="sbi"></div></div></div>
+          <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:var(--border-l);"><div class="back-btn">←</div><div style="font-family:'Space Mono',monospace;font-size:13px;">Change PIN</div></div>
+          <div style="padding:30px 20px;display:flex;flex-direction:column;align-items:center;gap:14px;">
+            <div style="text-align:center;font-family:'Space Mono',monospace;font-size:13px;">Enter Current PIN</div>
+            <div style="text-align:center;font-size:10px;color:var(--mid);margin-bottom:4px;">Verify your identity first</div>
+            <div style="display:flex;gap:10px;">
+              <div style="width:48px;height:56px;border:var(--border);border-radius:10px;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:24px;">•</div>
+              <div style="width:48px;height:56px;border:var(--border);border-radius:10px;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:24px;">•</div>
+              <div style="width:48px;height:56px;border:var(--border);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:24px;color:#bbb;">_</div>
+              <div style="width:48px;height:56px;border:var(--border-l);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:24px;color:#bbb;">_</div>
+            </div>
+            <div style="font-size:9px;color:var(--mid);">Forgot PIN? <span style="color:var(--ink);text-decoration:underline">Use biometric instead</span></div>
+            <div class="keypad" style="width:100%;">
+              <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+              <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+              <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+              <div class="key empty"></div><div class="key">0</div><div class="key" style="color:var(--mid)">⌫</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">7C — Change PIN</div>
+    </div>
+  </div>
+  <div class="ann-list">
+    <div class="ann"><div class="ann-dot">1</div>Linked Accounts removed from Settings — no bank integration</div>
+    <div class="ann"><div class="ann-dot">2</div>Biometric Lock toggle + Change PIN + Lock Sensitive Actions all in Security section</div>
+    <div class="ann"><div class="ann-dot">3</div>Notifications: master toggle highlights at top, all individual toggles below with reminder time picker</div>
+    <div class="ann"><div class="ann-dot">4</div>Feedback screen: star rating + tagging + freetext + feature priority ranking + email opt-in = reward unlock</div>
+  </div>
+</div>
+
+</body>
+</html>
