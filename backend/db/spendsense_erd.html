@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpendSense — Database Schema</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0c0e13;
+    --bg2: #111318;
+    --bg3: #181b23;
+    --border: #252830;
+    --border2: #2e3240;
+    --text: #e2e6f0;
+    --text2: #8b90a0;
+    --text3: #555b6e;
+    --accent: #4f8eff;
+    --accent2: #2563eb;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+
+    /* group colors */
+    --g-auth: #4f8eff;
+    --g-txn: #22c55e;
+    --g-cat: #a855f7;
+    --g-plan: #f59e0b;
+    --g-ai: #06b6d4;
+    --g-support: #f97316;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 52px;
+    background: rgba(12,14,19,.95);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    backdrop-filter: blur(12px);
+  }
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: .5px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .header-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: var(--text3);
+    display: flex; gap: 20px; align-items: center;
+  }
+  .hm-badge {
+    padding: 3px 9px; border: 1px solid var(--border2);
+    border-radius: 3px; color: var(--text2);
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    position: fixed; bottom: 20px; left: 20px; z-index: 100;
+    background: rgba(17,19,24,.9);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    backdrop-filter: blur(8px);
+  }
+  .legend-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .legend-items { display: flex; flex-direction: column; gap: 5px; }
+  .li { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text2); }
+  .li-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── CONTROLS ── */
+  .controls {
+    position: fixed; bottom: 20px; right: 20px; z-index: 100;
+    display: flex; gap: 8px;
+  }
+  .ctrl-btn {
+    width: 36px; height: 36px;
+    background: rgba(17,19,24,.9);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text2);
+    font-size: 16px; transition: all .15s;
+    font-family: 'IBM Plex Mono', monospace;
+    backdrop-filter: blur(8px);
+  }
+  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── CANVAS ── */
+  #canvas {
+    position: fixed;
+    top: 52px; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    cursor: grab;
+  }
+  #canvas.dragging { cursor: grabbing; }
+
+  #world {
+    position: absolute;
+    top: 0; left: 0;
+    transform-origin: 0 0;
+  }
+
+  /* ── SVG CONNECTIONS ── */
+  #svg-layer {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  /* ── TABLE CARD ── */
+  .tbl {
+    position: absolute;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    min-width: 230px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.5);
+    transition: box-shadow .2s, border-color .2s;
+    cursor: default;
+    user-select: none;
+  }
+  .tbl:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent), 0 12px 40px rgba(79,142,255,.15);
+    z-index: 10 !important;
+  }
+  .tbl.highlighted {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent), 0 12px 40px rgba(79,142,255,.25);
+    z-index: 20 !important;
+  }
+  .tbl-header {
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    border-radius: 10px 10px 0 0;
+    cursor: move;
+  }
+  .tbl-group-bar {
+    width: 3px; height: 22px; border-radius: 2px; flex-shrink: 0;
+  }
+  .tbl-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: .3px;
+    flex: 1;
+  }
+  .tbl-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; color: var(--text3);
+    padding: 2px 6px; border: 1px solid var(--border); border-radius: 3px;
+  }
+  .tbl-body { padding: 4px 0; }
+
+  /* ── FIELD ROW ── */
+  .field {
+    display: flex; align-items: center; gap: 0;
+    padding: 3px 12px;
+    transition: background .1s;
+  }
+  .field:hover { background: rgba(255,255,255,.03); }
+  .field-icons {
+    width: 32px; display: flex; align-items: center; gap: 3px; flex-shrink: 0;
+  }
+  .icon-pk, .icon-fk, .icon-uk {
+    font-size: 9px; font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600; padding: 1px 3px; border-radius: 2px;
+  }
+  .icon-pk { color: var(--yellow); background: rgba(245,158,11,.12); }
+  .icon-fk { color: var(--accent); background: rgba(79,142,255,.12); }
+  .icon-uk { color: var(--purple); background: rgba(168,85,247,.12); }
+  .field-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px; color: var(--text); flex: 1;
+    white-space: nowrap;
+  }
+  .field-name.pk { color: var(--yellow); }
+  .field-name.fk { color: var(--accent); }
+  .field-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; color: var(--text3);
+    white-space: nowrap;
+  }
+  .field-divider {
+    height: 1px; background: var(--border); margin: 3px 0;
+  }
+
+  /* ── TOOLTIP ── */
+  .tooltip {
+    position: fixed;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: var(--text2);
+    pointer-events: none;
+    z-index: 999;
+    display: none;
+    max-width: 200px;
+    line-height: 1.6;
+    box-shadow: 0 4px 16px rgba(0,0,0,.4);
+  }
+
+  /* ── GRID BG ── */
+  .grid-bg {
+    position: absolute; inset: -2000px;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: .4;
+  }
+
+  /* connection line */
+  .conn-line { stroke-width: 1.5; fill: none; opacity: .6; }
+  .conn-line:hover { opacity: 1; stroke-width: 2.5; }
+  .conn-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; fill: var(--text3);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    SPENDSENSE — DATABASE SCHEMA
+  </div>
+  <div class="header-meta">
+    <span class="hm-badge">PostgreSQL</span>
+    <span class="hm-badge">12 Tables</span>
+    <span class="hm-badge">3 Views</span>
+    <span style="color:var(--text3)">Scroll to zoom · Drag to pan · Hover to highlight</span>
+  </div>
+</header>
+
+<div id="canvas">
+  <div id="world">
+    <div class="grid-bg"></div>
+    <svg id="svg-layer" width="4000" height="3200"></svg>
+    <!-- Tables injected by JS -->
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-title">Groups</div>
+  <div class="legend-items">
+    <div class="li"><div class="li-dot" style="background:var(--g-auth)"></div>Auth & Users</div>
+    <div class="li"><div class="li-dot" style="background:var(--g-txn)"></div>Transactions</div>
+    <div class="li"><div class="li-dot" style="background:var(--g-cat)"></div>Categories</div>
+    <div class="li"><div class="li-dot" style="background:var(--g-plan)"></div>Plans (Goals/Budget)</div>
+    <div class="li"><div class="li-dot" style="background:var(--g-ai)"></div>AI & Insights</div>
+    <div class="li"><div class="li-dot" style="background:var(--g-support)"></div>Support & Feedback</div>
+    <div style="height:8px"></div>
+    <div class="li"><span class="icon-pk">PK</span> Primary Key</div>
+    <div class="li"><span class="icon-fk">FK</span> Foreign Key</div>
+    <div class="li"><span class="icon-uk">UK</span> Unique</div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="ctrl-btn" id="btn-fit" title="Fit to screen">⊡</button>
+  <button class="ctrl-btn" id="btn-plus" title="Zoom in">+</button>
+  <button class="ctrl-btn" id="btn-minus" title="Zoom out">−</button>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA MODEL
+// ═══════════════════════════════════════════
+const TABLES = [
+  {
+    id: 'users',
+    name: 'users',
+    group: 'auth',
+    color: 'var(--g-auth)',
+    x: 420, y: 80,
+    fields: [
+      { name: 'id',              type: 'UUID',        pk: true },
+      { name: 'email',           type: 'TEXT',        uk: true },
+      { name: 'phone',           type: 'TEXT',        uk: true },
+      { name: 'full_name',       type: 'TEXT' },
+      { name: 'avatar_url',      type: 'TEXT' },
+      { name: 'currency',        type: 'CHAR(3)' },
+      { name: 'timezone',        type: 'TEXT' },
+      { name: 'onboarding_done', type: 'BOOLEAN' },
+      { name: 'monthly_income',  type: 'NUMERIC(15,2)' },
+      { name: 'is_active',       type: 'BOOLEAN' },
+      { name: 'deleted_at',      type: 'TIMESTAMPTZ' },
+      { name: 'created_at',      type: 'TIMESTAMPTZ' },
+      { name: 'updated_at',      type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'auth_providers',
+    name: 'auth_providers',
+    group: 'auth',
+    color: 'var(--g-auth)',
+    x: 80, y: 80,
+    fields: [
+      { name: 'id',           type: 'UUID',  pk: true },
+      { name: 'user_id',      type: 'UUID',  fk: 'users.id' },
+      { name: 'provider',     type: 'TEXT' },
+      { name: 'provider_uid', type: 'TEXT',  uk: true },
+      { name: 'password_hash',type: 'TEXT' },
+      { name: 'created_at',   type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'user_security',
+    name: 'user_security',
+    group: 'auth',
+    color: 'var(--g-auth)',
+    x: 80, y: 360,
+    fields: [
+      { name: 'user_id',           type: 'UUID',    pk: true, fk: 'users.id' },
+      { name: 'pin_hash',          type: 'TEXT' },
+      { name: 'biometric_enabled', type: 'BOOLEAN' },
+      { name: 'pin_enabled',       type: 'BOOLEAN' },
+      { name: 'updated_at',        type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'otp_codes',
+    name: 'otp_codes',
+    group: 'auth',
+    color: 'var(--g-auth)',
+    x: 80, y: 580,
+    fields: [
+      { name: 'id',         type: 'UUID',  pk: true },
+      { name: 'user_id',    type: 'UUID',  fk: 'users.id' },
+      { name: 'target',     type: 'TEXT' },
+      { name: 'code_hash',  type: 'TEXT' },
+      { name: 'purpose',    type: 'TEXT' },
+      { name: 'expires_at', type: 'TIMESTAMPTZ' },
+      { name: 'used_at',    type: 'TIMESTAMPTZ' },
+      { name: 'created_at', type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'sessions',
+    name: 'sessions',
+    group: 'auth',
+    color: 'var(--g-auth)',
+    x: 80, y: 820,
+    fields: [
+      { name: 'id',              type: 'UUID',  pk: true },
+      { name: 'user_id',         type: 'UUID',  fk: 'users.id' },
+      { name: 'refresh_token',   type: 'TEXT',  uk: true },
+      { name: 'device_name',     type: 'TEXT' },
+      { name: 'device_platform', type: 'TEXT' },
+      { name: 'last_active_at',  type: 'TIMESTAMPTZ' },
+      { name: 'expires_at',      type: 'TIMESTAMPTZ' },
+      { name: 'created_at',      type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'categories',
+    name: 'categories',
+    group: 'cat',
+    color: 'var(--g-cat)',
+    x: 760, y: 80,
+    fields: [
+      { name: 'id',         type: 'UUID',  pk: true },
+      { name: 'user_id',    type: 'UUID',  fk: 'users.id' },
+      { name: 'name',       type: 'TEXT' },
+      { name: 'emoji',      type: 'TEXT' },
+      { name: 'color_hex',  type: 'CHAR(7)' },
+      { name: 'type',       type: 'TEXT' },
+      { name: 'is_system',  type: 'BOOLEAN' },
+      { name: 'sort_order', type: 'INT' },
+      { name: 'created_at', type: 'TIMESTAMPTZ' },
+      { name: 'updated_at', type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'sub_categories',
+    name: 'sub_categories',
+    group: 'cat',
+    color: 'var(--g-cat)',
+    x: 760, y: 380,
+    fields: [
+      { name: 'id',          type: 'UUID',  pk: true },
+      { name: 'category_id', type: 'UUID',  fk: 'categories.id' },
+      { name: 'user_id',     type: 'UUID',  fk: 'users.id' },
+      { name: 'name',        type: 'TEXT' },
+      { name: 'is_system',   type: 'BOOLEAN' },
+      { name: 'created_at',  type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'transactions',
+    name: 'transactions',
+    group: 'txn',
+    color: 'var(--g-txn)',
+    x: 1100, y: 80,
+    fields: [
+      { name: 'id',                type: 'UUID',         pk: true },
+      { name: 'user_id',           type: 'UUID',         fk: 'users.id' },
+      { name: 'type',              type: 'TEXT' },
+      { name: 'amount',            type: 'NUMERIC(15,2)' },
+      { name: 'currency',          type: 'CHAR(3)' },
+      { name: 'merchant',          type: 'TEXT' },
+      { name: 'note',              type: 'TEXT' },
+      { name: 'txn_date',          type: 'DATE' },
+      { name: 'txn_time',          type: 'TIME' },
+      { name: 'category_id',       type: 'UUID',         fk: 'categories.id' },
+      { name: 'sub_category_id',   type: 'UUID',         fk: 'sub_categories.id' },
+      { name: 'entry_method',      type: 'TEXT' },
+      { name: 'ai_parsed',         type: 'BOOLEAN' },
+      { name: 'ai_confidence',     type: 'NUMERIC(5,2)' },
+      { name: 'ai_raw_input',      type: 'TEXT' },
+      { name: 'receipt_url',       type: 'TEXT' },
+      { name: 'recurring_rule_id', type: 'UUID',         fk: 'recurring_rules.id' },
+      { name: 'goal_id',           type: 'UUID',         fk: 'goals.id' },
+      { name: 'document_id',       type: 'UUID',         fk: 'uploaded_documents.id' },
+      { name: 'deleted_at',        type: 'TIMESTAMPTZ' },
+      { name: 'created_at',        type: 'TIMESTAMPTZ' },
+      { name: 'updated_at',        type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'uploaded_documents',
+    name: 'uploaded_documents',
+    group: 'txn',
+    color: 'var(--g-txn)',
+    x: 1500, y: 80,
+    fields: [
+      { name: 'id',                type: 'UUID',    pk: true },
+      { name: 'user_id',           type: 'UUID',    fk: 'users.id' },
+      { name: 'file_url',          type: 'TEXT' },
+      { name: 'file_type',         type: 'TEXT' },
+      { name: 'file_size_bytes',   type: 'BIGINT' },
+      { name: 'original_filename', type: 'TEXT' },
+      { name: 'ocr_text',          type: 'TEXT' },
+      { name: 'parse_status',      type: 'TEXT' },
+      { name: 'parsed_count',      type: 'INT' },
+      { name: 'created_at',        type: 'TIMESTAMPTZ' },
+      { name: 'updated_at',        type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'recurring_rules',
+    name: 'recurring_rules',
+    group: 'plan',
+    color: 'var(--g-plan)',
+    x: 760, y: 650,
+    fields: [
+      { name: 'id',                 type: 'UUID',         pk: true },
+      { name: 'user_id',            type: 'UUID',         fk: 'users.id' },
+      { name: 'name',               type: 'TEXT' },
+      { name: 'amount',             type: 'NUMERIC(15,2)' },
+      { name: 'currency',           type: 'CHAR(3)' },
+      { name: 'type',               type: 'TEXT' },
+      { name: 'category_id',        type: 'UUID',         fk: 'categories.id' },
+      { name: 'sub_category_id',    type: 'UUID',         fk: 'sub_categories.id' },
+      { name: 'merchant',           type: 'TEXT' },
+      { name: 'frequency',          type: 'TEXT' },
+      { name: 'frequency_interval', type: 'INT' },
+      { name: 'start_date',         type: 'DATE' },
+      { name: 'end_date',           type: 'DATE' },
+      { name: 'next_due_date',      type: 'DATE' },
+      { name: 'auto_log',           type: 'BOOLEAN' },
+      { name: 'is_active',          type: 'BOOLEAN' },
+      { name: 'deleted_at',         type: 'TIMESTAMPTZ' },
+      { name: 'created_at',         type: 'TIMESTAMPTZ' },
+      { name: 'updated_at',         type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'budgets',
+    name: 'budgets',
+    group: 'plan',
+    color: 'var(--g-plan)',
+    x: 1100, y: 680,
+    fields: [
+      { name: 'id',          type: 'UUID',         pk: true },
+      { name: 'user_id',     type: 'UUID',         fk: 'users.id' },
+      { name: 'name',        type: 'TEXT' },
+      { name: 'category_id', type: 'UUID',         fk: 'categories.id' },
+      { name: 'period',      type: 'TEXT' },
+      { name: 'amount',      type: 'NUMERIC(15,2)' },
+      { name: 'start_date',  type: 'DATE' },
+      { name: 'end_date',    type: 'DATE' },
+      { name: 'is_active',   type: 'BOOLEAN' },
+      { name: 'deleted_at',  type: 'TIMESTAMPTZ' },
+      { name: 'created_at',  type: 'TIMESTAMPTZ' },
+      { name: 'updated_at',  type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'budget_snapshots',
+    name: 'budget_snapshots',
+    group: 'plan',
+    color: 'var(--g-plan)',
+    x: 1100, y: 1020,
+    fields: [
+      { name: 'id',           type: 'UUID',         pk: true },
+      { name: 'budget_id',    type: 'UUID',         fk: 'budgets.id' },
+      { name: 'period_start', type: 'DATE' },
+      { name: 'period_end',   type: 'DATE' },
+      { name: 'budgeted',     type: 'NUMERIC(15,2)' },
+      { name: 'spent',        type: 'NUMERIC(15,2)' },
+      { name: 'created_at',   type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'goals',
+    name: 'goals',
+    group: 'plan',
+    color: 'var(--g-plan)',
+    x: 1500, y: 500,
+    fields: [
+      { name: 'id',                   type: 'UUID',         pk: true },
+      { name: 'user_id',              type: 'UUID',         fk: 'users.id' },
+      { name: 'name',                 type: 'TEXT' },
+      { name: 'emoji',                type: 'TEXT' },
+      { name: 'target_amount',        type: 'NUMERIC(15,2)' },
+      { name: 'current_amount',       type: 'NUMERIC(15,2)' },
+      { name: 'monthly_contribution', type: 'NUMERIC(15,2)' },
+      { name: 'target_date',          type: 'DATE' },
+      { name: 'status',               type: 'TEXT' },
+      { name: 'note',                 type: 'TEXT' },
+      { name: 'deleted_at',           type: 'TIMESTAMPTZ' },
+      { name: 'created_at',           type: 'TIMESTAMPTZ' },
+      { name: 'updated_at',           type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'goal_contributions',
+    name: 'goal_contributions',
+    group: 'plan',
+    color: 'var(--g-plan)',
+    x: 1500, y: 860,
+    fields: [
+      { name: 'id',             type: 'UUID',         pk: true },
+      { name: 'goal_id',        type: 'UUID',         fk: 'goals.id' },
+      { name: 'transaction_id', type: 'UUID',         fk: 'transactions.id' },
+      { name: 'amount',         type: 'NUMERIC(15,2)' },
+      { name: 'note',           type: 'TEXT' },
+      { name: 'contributed_at', type: 'TIMESTAMPTZ' },
+      { name: 'created_at',     type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'ai_insights',
+    name: 'ai_insights',
+    group: 'ai',
+    color: 'var(--g-ai)',
+    x: 1870, y: 80,
+    fields: [
+      { name: 'id',                   type: 'UUID',  pk: true },
+      { name: 'user_id',              type: 'UUID',  fk: 'users.id' },
+      { name: 'insight_type',         type: 'TEXT' },
+      { name: 'title',                type: 'TEXT' },
+      { name: 'body',                 type: 'TEXT' },
+      { name: 'priority',             type: 'INT' },
+      { name: 'related_category_id',  type: 'UUID',  fk: 'categories.id' },
+      { name: 'related_goal_id',      type: 'UUID',  fk: 'goals.id' },
+      { name: 'is_read',              type: 'BOOLEAN' },
+      { name: 'is_dismissed',         type: 'BOOLEAN' },
+      { name: 'generated_at',         type: 'TIMESTAMPTZ' },
+      { name: 'expires_at',           type: 'TIMESTAMPTZ' },
+      { name: 'created_at',           type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'user_preferences',
+    name: 'user_preferences',
+    group: 'support',
+    color: 'var(--g-support)',
+    x: 1870, y: 480,
+    fields: [
+      { name: 'user_id',                   type: 'UUID',    pk: true, fk: 'users.id' },
+      { name: 'theme',                     type: 'TEXT' },
+      { name: 'language',                  type: 'CHAR(5)' },
+      { name: 'budget_alert_threshold',    type: 'INT' },
+      { name: 'notif_daily_summary',       type: 'BOOLEAN' },
+      { name: 'notif_budget_alerts',       type: 'BOOLEAN' },
+      { name: 'notif_goal_milestones',     type: 'BOOLEAN' },
+      { name: 'notif_recurring_reminders', type: 'BOOLEAN' },
+      { name: 'notif_ai_tips',             type: 'BOOLEAN' },
+      { name: 'pdf_uploads_monthly_limit', type: 'INT' },
+      { name: 'pdf_uploads_used',          type: 'INT' },
+      { name: 'pdf_quota_reset_date',      type: 'DATE' },
+      { name: 'email_updates',             type: 'BOOLEAN' },
+      { name: 'updated_at',                type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'notifications',
+    name: 'notifications',
+    group: 'support',
+    color: 'var(--g-support)',
+    x: 1870, y: 870,
+    fields: [
+      { name: 'id',         type: 'UUID',  pk: true },
+      { name: 'user_id',    type: 'UUID',  fk: 'users.id' },
+      { name: 'type',       type: 'TEXT' },
+      { name: 'title',      type: 'TEXT' },
+      { name: 'body',       type: 'TEXT' },
+      { name: 'deep_link',  type: 'TEXT' },
+      { name: 'is_read',    type: 'BOOLEAN' },
+      { name: 'sent_at',    type: 'TIMESTAMPTZ' },
+      { name: 'created_at', type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'feedback_submissions',
+    name: 'feedback_submissions',
+    group: 'support',
+    color: 'var(--g-support)',
+    x: 1870, y: 1120,
+    fields: [
+      { name: 'id',              type: 'UUID',      pk: true },
+      { name: 'user_id',         type: 'UUID',      fk: 'users.id' },
+      { name: 'rating',          type: 'SMALLINT' },
+      { name: 'happy_with',      type: 'TEXT[]' },
+      { name: 'improve_areas',   type: 'TEXT[]' },
+      { name: 'suggestions',     type: 'TEXT' },
+      { name: 'ranked_features', type: 'JSONB' },
+      { name: 'email_updates',   type: 'BOOLEAN' },
+      { name: 'reward_granted',  type: 'BOOLEAN' },
+      { name: 'submitted_at',    type: 'TIMESTAMPTZ' },
+      { name: 'created_at',      type: 'TIMESTAMPTZ' },
+    ]
+  },
+  {
+    id: 'audit_log',
+    name: 'audit_log',
+    group: 'support',
+    color: 'var(--g-support)',
+    x: 1500, y: 1140,
+    fields: [
+      { name: 'id',          type: 'BIGSERIAL', pk: true },
+      { name: 'user_id',     type: 'UUID',      fk: 'users.id' },
+      { name: 'action',      type: 'TEXT' },
+      { name: 'entity_type', type: 'TEXT' },
+      { name: 'entity_id',   type: 'UUID' },
+      { name: 'diff',        type: 'JSONB' },
+      { name: 'ip_address',  type: 'INET' },
+      { name: 'user_agent',  type: 'TEXT' },
+      { name: 'created_at',  type: 'TIMESTAMPTZ' },
+    ]
+  },
+];
+
+// All FK connections: [fromTable, fromField, toTable, toField]
+const CONNECTIONS = [
+  ['auth_providers',     'user_id',            'users',             'id'],
+  ['user_security',      'user_id',            'users',             'id'],
+  ['otp_codes',          'user_id',            'users',             'id'],
+  ['sessions',           'user_id',            'users',             'id'],
+  ['categories',         'user_id',            'users',             'id'],
+  ['sub_categories',     'user_id',            'users',             'id'],
+  ['sub_categories',     'category_id',        'categories',        'id'],
+  ['transactions',       'user_id',            'users',             'id'],
+  ['transactions',       'category_id',        'categories',        'id'],
+  ['transactions',       'sub_category_id',    'sub_categories',    'id'],
+  ['transactions',       'recurring_rule_id',  'recurring_rules',   'id'],
+  ['transactions',       'goal_id',            'goals',             'id'],
+  ['transactions',       'document_id',        'uploaded_documents','id'],
+  ['uploaded_documents', 'user_id',            'users',             'id'],
+  ['recurring_rules',    'user_id',            'users',             'id'],
+  ['recurring_rules',    'category_id',        'categories',        'id'],
+  ['recurring_rules',    'sub_category_id',    'sub_categories',    'id'],
+  ['budgets',            'user_id',            'users',             'id'],
+  ['budgets',            'category_id',        'categories',        'id'],
+  ['budget_snapshots',   'budget_id',          'budgets',           'id'],
+  ['goals',              'user_id',            'users',             'id'],
+  ['goal_contributions', 'goal_id',            'goals',             'id'],
+  ['goal_contributions', 'transaction_id',     'transactions',      'id'],
+  ['ai_insights',        'user_id',            'users',             'id'],
+  ['ai_insights',        'related_category_id','categories',        'id'],
+  ['ai_insights',        'related_goal_id',    'goals',             'id'],
+  ['user_preferences',   'user_id',            'users',             'id'],
+  ['notifications',      'user_id',            'users',             'id'],
+  ['feedback_submissions','user_id',           'users',             'id'],
+  ['audit_log',          'user_id',            'users',             'id'],
+];
+
+// group color map
+const GROUP_COLORS = {
+  auth:    'var(--g-auth)',
+  txn:     'var(--g-txn)',
+  cat:     'var(--g-cat)',
+  plan:    'var(--g-plan)',
+  ai:      'var(--g-ai)',
+  support: 'var(--g-support)',
+};
+
+const GROUP_COLORS_HEX = {
+  auth:    '#4f8eff',
+  txn:     '#22c55e',
+  cat:     '#a855f7',
+  plan:    '#f59e0b',
+  ai:      '#06b6d4',
+  support: '#f97316',
+};
+
+// ═══════════════════════════════════════════
+// BUILD DOM
+// ═══════════════════════════════════════════
+const world = document.getElementById('world');
+const svg   = document.getElementById('svg-layer');
+
+// store element refs for connection calculation
+const tableEls = {};
+
+function fieldRowHeight() { return 22; }
+function headerHeight()   { return 42; }
+
+function buildTable(tbl) {
+  const div = document.createElement('div');
+  div.className = 'tbl';
+  div.id = 'tbl-' + tbl.id;
+  div.style.left = tbl.x + 'px';
+  div.style.top  = tbl.y + 'px';
+  div.style.zIndex = 1;
+
+  const fieldCount = tbl.fields.length;
+
+  // header
+  const hdr = document.createElement('div');
+  hdr.className = 'tbl-header';
+  hdr.innerHTML = `
+    <div class="tbl-group-bar" style="background:${GROUP_COLORS[tbl.group]}"></div>
+    <div class="tbl-name" style="color:${GROUP_COLORS[tbl.group]}">${tbl.name}</div>
+    <div class="tbl-count">${fieldCount}</div>
+  `;
+  div.appendChild(hdr);
+
+  // body
+  const body = document.createElement('div');
+  body.className = 'tbl-body';
+
+  tbl.fields.forEach((f, i) => {
+    if (i > 0 && (f.pk || (tbl.fields[i-1].pk && !f.pk))) {
+      const d = document.createElement('div');
+      d.className = 'field-divider';
+      body.appendChild(d);
+    }
+    const row = document.createElement('div');
+    row.className = 'field';
+    row.dataset.field = f.name;
+    row.dataset.table = tbl.id;
+
+    const icons = document.createElement('div');
+    icons.className = 'field-icons';
+    if (f.pk) icons.innerHTML += '<span class="icon-pk">PK</span>';
+    else if (f.fk) icons.innerHTML += '<span class="icon-fk">FK</span>';
+    else if (f.uk) icons.innerHTML += '<span class="icon-uk">UK</span>';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'field-name' + (f.pk ? ' pk' : f.fk ? ' fk' : '');
+    nameEl.textContent = f.name;
+
+    const typeEl = document.createElement('div');
+    typeEl.className = 'field-type';
+    typeEl.textContent = f.type;
+
+    row.appendChild(icons);
+    row.appendChild(nameEl);
+    row.appendChild(typeEl);
+    body.appendChild(row);
+  });
+
+  div.appendChild(body);
+  world.appendChild(div);
+  tableEls[tbl.id] = div;
+
+  // make draggable
+  makeDraggable(div, tbl, hdr);
+}
+
+TABLES.forEach(buildTable);
+
+// ═══════════════════════════════════════════
+// DRAGGABLE TABLES
+// ═══════════════════════════════════════════
+function makeDraggable(el, tbl, handle) {
+  let startX, startY, startLeft, startTop, dragging = false;
+
+  handle.addEventListener('mousedown', e => {
+    if (e.button !== 0) return;
+    dragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseInt(el.style.left);
+    startTop  = parseInt(el.style.top);
+    el.style.zIndex = 50;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx = (e.clientX - startX) / transform.scale;
+    const dy = (e.clientY - startY) / transform.scale;
+    const newX = startLeft + dx;
+    const newY = startTop  + dy;
+    el.style.left = newX + 'px';
+    el.style.top  = newY + 'px';
+    tbl.x = newX;
+    tbl.y = newY;
+    drawConnections();
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (dragging) {
+      dragging = false;
+      el.style.zIndex = 1;
+    }
+  });
+}
+
+// ═══════════════════════════════════════════
+// CONNECTIONS / SVG
+// ═══════════════════════════════════════════
+function getTableBounds(tblId) {
+  const el = tableEls[tblId];
+  const tbl = TABLES.find(t => t.id === tblId);
+  const w = el.offsetWidth;
+  const h = el.offsetHeight;
+  return { x: tbl.x, y: tbl.y, w, h };
+}
+
+function getFieldY(tblId, fieldName) {
+  const tbl = TABLES.find(t => t.id === tblId);
+  const el = tableEls[tblId];
+  const b = getTableBounds(tblId);
+
+  // find field index
+  const idx = tbl.fields.findIndex(f => f.name === fieldName);
+  if (idx === -1) return b.y + b.h / 2;
+
+  // approximate Y — header + divider + rows
+  let y = b.y + headerHeight() + 4;
+  for (let i = 0; i < idx; i++) {
+    // check if divider added before this index
+    const f = tbl.fields[i];
+    const fn = tbl.fields[i+1];
+    y += fieldRowHeight();
+    if (fn && (fn.pk || (f.pk && !fn.pk))) y += 7;
+  }
+  y += fieldRowHeight() / 2;
+  return y;
+}
+
+function drawConnections() {
+  // clear existing
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  // draw group bg halos (subtle)
+  const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+  svg.appendChild(defs);
+
+  CONNECTIONS.forEach(([fromT, fromF, toT, toF]) => {
+    const from = getTableBounds(fromT);
+    const to   = getTableBounds(toT);
+
+    const fromColor = GROUP_COLORS_HEX[TABLES.find(t=>t.id===fromT).group];
+    const toColor   = GROUP_COLORS_HEX[TABLES.find(t=>t.id===toT).group];
+
+    const fy = getFieldY(fromT, fromF);
+    const ty = getFieldY(toT, toF);
+
+    // decide left/right attachment
+    let x1, x2, cpX1, cpX2;
+    const fromCenterX = from.x + from.w / 2;
+    const toCenterX   = to.x   + to.w   / 2;
+
+    if (fromCenterX <= toCenterX) {
+      x1 = from.x + from.w;
+      x2 = to.x;
+    } else {
+      x1 = from.x;
+      x2 = to.x + to.w;
+    }
+
+    const dx = Math.abs(x2 - x1);
+    const cp = Math.max(dx * 0.5, 60);
+    cpX1 = x1 + (x1 < x2 ? cp : -cp);
+    cpX2 = x2 + (x2 < x1 ? cp : -cp);
+
+    // gradient id
+    const gid = `g-${fromT}-${fromF}`.replace(/[_]/g,'-');
+    const grad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+    grad.setAttribute('id', gid);
+    grad.setAttribute('gradientUnits','userSpaceOnUse');
+    grad.setAttribute('x1', x1); grad.setAttribute('y1', fy);
+    grad.setAttribute('x2', x2); grad.setAttribute('y2', ty);
+    const s1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+    s1.setAttribute('offset','0%'); s1.setAttribute('stop-color', fromColor); s1.setAttribute('stop-opacity','0.7');
+    const s2 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+    s2.setAttribute('offset','100%'); s2.setAttribute('stop-color', toColor); s2.setAttribute('stop-opacity','0.5');
+    grad.appendChild(s1); grad.appendChild(s2);
+    defs.appendChild(grad);
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', `M${x1},${fy} C${cpX1},${fy} ${cpX2},${ty} ${x2},${ty}`);
+    path.setAttribute('stroke', `url(#${gid})`);
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('opacity', '0.5');
+
+    // dot at endpoints
+    const circle1 = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle1.setAttribute('cx', x1); circle1.setAttribute('cy', fy);
+    circle1.setAttribute('r', '2.5'); circle1.setAttribute('fill', fromColor); circle1.setAttribute('opacity','0.8');
+
+    const circle2 = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle2.setAttribute('cx', x2); circle2.setAttribute('cy', ty);
+    circle2.setAttribute('r', '2.5'); circle2.setAttribute('fill', toColor); circle2.setAttribute('opacity','0.8');
+
+    svg.appendChild(path);
+    svg.appendChild(circle1);
+    svg.appendChild(circle2);
+  });
+}
+
+// ═══════════════════════════════════════════
+// PAN & ZOOM
+// ═══════════════════════════════════════════
+const canvas = document.getElementById('canvas');
+const transform = { x: 0, y: 0, scale: 0.62 };
+
+function applyTransform() {
+  world.style.transform = `translate(${transform.x}px,${transform.y}px) scale(${transform.scale})`;
+}
+
+let isPanning = false, panStart = { x: 0, y: 0 };
+
+canvas.addEventListener('mousedown', e => {
+  if (e.target.closest('.tbl')) return;
+  isPanning = true;
+  panStart = { x: e.clientX - transform.x, y: e.clientY - transform.y };
+  canvas.classList.add('dragging');
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  transform.x = e.clientX - panStart.x;
+  transform.y = e.clientY - panStart.y;
+  applyTransform();
+});
+
+document.addEventListener('mouseup', () => {
+  isPanning = false;
+  canvas.classList.remove('dragging');
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  // zoom toward mouse
+  transform.x = mx - (mx - transform.x) * delta;
+  transform.y = my - (my - transform.y) * delta;
+  transform.scale = Math.min(2, Math.max(0.2, transform.scale * delta));
+  applyTransform();
+}, { passive: false });
+
+// buttons
+document.getElementById('btn-plus').addEventListener('click', () => {
+  transform.scale = Math.min(2, transform.scale * 1.2);
+  applyTransform();
+});
+document.getElementById('btn-minus').addEventListener('click', () => {
+  transform.scale = Math.max(0.2, transform.scale * 0.8);
+  applyTransform();
+});
+document.getElementById('btn-fit').addEventListener('click', fitScreen);
+
+function fitScreen() {
+  const rect = canvas.getBoundingClientRect();
+  // find bounding box of all tables
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  TABLES.forEach(t => {
+    const el = tableEls[t.id];
+    minX = Math.min(minX, t.x);
+    minY = Math.min(minY, t.y);
+    maxX = Math.max(maxX, t.x + el.offsetWidth);
+    maxY = Math.max(maxY, t.y + el.offsetHeight);
+  });
+  const pw = maxX - minX + 80;
+  const ph = maxY - minY + 80;
+  const scale = Math.min(rect.width / pw, rect.height / ph, 1);
+  transform.scale = scale * 0.9;
+  transform.x = (rect.width  - pw * transform.scale) / 2 - minX * transform.scale + 40 * transform.scale;
+  transform.y = (rect.height - ph * transform.scale) / 2 - minY * transform.scale + 40 * transform.scale;
+  applyTransform();
+}
+
+// ═══════════════════════════════════════════
+// HIGHLIGHT ON HOVER
+// ═══════════════════════════════════════════
+TABLES.forEach(tbl => {
+  const el = tableEls[tbl.id];
+  el.addEventListener('mouseenter', () => {
+    // find connected tables
+    const connected = new Set();
+    CONNECTIONS.forEach(([ft, ff, tt, tf]) => {
+      if (ft === tbl.id) connected.add(tt);
+      if (tt === tbl.id) connected.add(ft);
+    });
+    // fade unrelated
+    TABLES.forEach(t => {
+      if (t.id !== tbl.id && !connected.has(t.id)) {
+        tableEls[t.id].style.opacity = '0.25';
+      }
+    });
+    el.classList.add('highlighted');
+  });
+
+  el.addEventListener('mouseleave', () => {
+    TABLES.forEach(t => { tableEls[t.id].style.opacity = '1'; });
+    el.classList.remove('highlighted');
+  });
+});
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+// wait a tick for layout
+requestAnimationFrame(() => {
+  drawConnections();
+  fitScreen();
+});
+
+// redraw on resize
+window.addEventListener('resize', () => {
+  drawConnections();
+});
+</script>
+</body>
+</html>
