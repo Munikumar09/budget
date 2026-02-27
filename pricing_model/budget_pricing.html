@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Expense Tracker Cost Modeling Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom range slider styling */
+        input[type=range] {
+            accent-color: #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-slate-900 dark:text-gray-100 transition-colors duration-300 font-sans">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <svg class="w-8 h-8 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="font-bold text-xl tracking-tight">AI Finance Cost Modeler</span>
+                </div>
+                <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors">
+                    <svg id="sunIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                    <svg id="moonIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+        
+        <!-- Header Section -->
+        <header class="text-center max-w-3xl mx-auto space-y-4">
+            <h1 class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-purple-600">Market & AI Cost Projections</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-lg">Interactive modeling for expense tracker economics using Sarvam STT and Gemini Flash-Lite LLM pricing.</p>
+        </header>
+
+        <!-- Competitor Pricing & Roadmap Tiers -->
+        <section class="grid md:grid-cols-2 gap-8">
+            <!-- Competitor Yearly Norm Chart -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+                <h2 class="text-xl font-bold mb-4">Competitor Pricing (Yearly Norm)</h2>
+                <div class="relative h-64">
+                    <canvas id="competitorChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recommended Roadmap -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 flex flex-col justify-between">
+                <h2 class="text-xl font-bold mb-4">Recommended Pricing Roadmap</h2>
+                <div class="space-y-4 flex-1">
+                    <div class="p-4 rounded-xl bg-gray-50 dark:bg-slate-700/50 border border-gray-100 dark:border-slate-600 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-gray-900 dark:text-white">Basic Plan</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Up to ~100 voice entries, Ads</p>
+                        </div>
+                        <span class="px-3 py-1 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 font-semibold rounded-full text-sm">Free</span>
+                    </div>
+                    <div class="p-4 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-gray-900 dark:text-white">Premium Plan</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">No ads, 100-150 txns, standard AI</p>
+                        </div>
+                        <span class="px-3 py-1 bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 font-semibold rounded-full text-sm">₹49–69/mo</span>
+                    </div>
+                    <div class="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-gray-900 dark:text-white">Power Tier</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">≥200 txns, unlimited OCR</p>
+                        </div>
+                        <span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-semibold rounded-full text-sm">₹99–129/mo</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Cost Calculator -->
+        <section class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                Heavy-User AI Cost Estimator (Per User/Month)
+            </h2>
+            
+            <div class="grid lg:grid-cols-2 gap-10">
+                <!-- Inputs -->
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="font-medium text-sm">Transactions per month</label>
+                            <span id="txnsVal" class="font-bold text-brand-600 dark:text-brand-400">300</span>
+                        </div>
+                        <input type="range" id="txns" min="50" max="600" value="300" step="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="font-medium text-sm">Audio duration per Txn (seconds)</label>
+                            <span id="audioVal" class="font-bold text-brand-600 dark:text-brand-400">10s</span>
+                        </div>
+                        <input type="range" id="audio" min="1" max="30" value="10" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700">
+                        <p class="text-xs text-gray-500 mt-1">Sarvam STT: ₹30 / hr (~₹0.0083/sec)</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <label class="font-medium text-sm">LLM Input Tokens</label>
+                                <span id="inTokensVal" class="font-bold text-brand-600 dark:text-brand-400">50</span>
+                            </div>
+                            <input type="range" id="inTokens" min="10" max="200" value="50" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700">
+                            <p class="text-xs text-gray-500 mt-1">₹6.2 per 1M</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <label class="font-medium text-sm">LLM Output Tokens</label>
+                                <span id="outTokensVal" class="font-bold text-brand-600 dark:text-brand-400">50</span>
+                            </div>
+                            <input type="range" id="outTokens" min="10" max="200" value="50" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700">
+                            <p class="text-xs text-gray-500 mt-1">₹25 per 1M</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="font-medium text-sm">Misc / Document OCR Buffer (₹)</label>
+                            <span id="ocrVal" class="font-bold text-brand-600 dark:text-brand-400">₹2.00</span>
+                        </div>
+                        <input type="range" id="ocr" min="0" max="15" value="2" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700">
+                    </div>
+                </div>
+
+                <!-- Outputs -->
+                <div class="flex flex-col justify-center">
+                    <div class="bg-gray-50 dark:bg-slate-700/40 rounded-2xl p-6 border border-gray-100 dark:border-slate-600 space-y-4">
+                        <h3 class="text-lg font-bold border-b border-gray-200 dark:border-slate-600 pb-2">Monthly Cost Breakdown</h3>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600 dark:text-gray-300">Speech-to-Text (STT)</span>
+                            <span id="sttCost" class="font-semibold font-mono">₹25.00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600 dark:text-gray-300">LLM (Gemini)</span>
+                            <span id="llmCost" class="font-semibold font-mono">₹0.47</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600 dark:text-gray-300">OCR / Buffer</span>
+                            <span id="ocrCost" class="font-semibold font-mono">₹2.00</span>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-gray-200 dark:border-slate-600 flex justify-between items-center">
+                            <span class="text-xl font-extrabold text-gray-900 dark:text-white">Total AI Cost</span>
+                            <span id="totalCost" class="text-2xl font-extrabold text-brand-600 dark:text-brand-400 font-mono">₹27.47</span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 text-right mt-2">Enterprise volume discounts (15-25%) not applied.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Revenue Scenario -->
+        <section class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+            <h2 class="text-2xl font-bold mb-6">Macro Scenario: Revenue vs. Costs</h2>
+            
+            <div class="grid lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-4 space-y-6">
+                    <div>
+                        <label class="block font-medium text-sm mb-2">Total User Base</label>
+                        <input type="number" id="totalUsers" value="100000" class="w-full px-4 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="font-medium text-sm">Conversion to Power Tier</label>
+                            <span id="convVal" class="font-bold text-brand-600 dark:text-brand-400">5%</span>
+                        </div>
+                        <input type="range" id="conversion" min="1" max="20" value="5" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-sm mb-2">Power Tier Price (₹/mo)</label>
+                        <input type="number" id="tierPrice" value="99" class="w-full px-4 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    
+                    <div class="p-4 bg-brand-50 dark:bg-brand-900/20 rounded-xl border border-brand-200 dark:border-brand-800">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600 dark:text-gray-400">Paid Power Users</span>
+                            <span id="paidUsersOut" class="font-bold">5,000</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600 dark:text-gray-400">Monthly Revenue</span>
+                            <span id="revenueOut" class="font-bold text-green-600 dark:text-green-400">₹495,000</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600 dark:text-gray-400">Heavy-User AI Cost</span>
+                            <span id="scenarioCostOut" class="font-bold text-red-600 dark:text-red-400">₹137,350</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-bold mt-3 pt-3 border-t border-brand-200 dark:border-brand-800">
+                            <span>Gross Margin</span>
+                            <span id="profitOut">₹357,650</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-8 relative h-80 lg:h-auto">
+                    <canvas id="scenarioChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="text-center text-sm text-gray-500 py-6 border-t border-gray-200 dark:border-slate-800 mt-12">
+            Pricing based on Sarvam API (₹30/hr audio), Google Gemini API (Flash-Lite), and Indian fintech monetization trends.
+        </footer>
+    </main>
+
+    <script>
+        // Constants from the report
+        const STT_RATE_PER_HR = 30; // ₹30/hr
+        const LLM_INPUT_RATE = 6.2; // ₹6.2 per 1M tokens
+        const LLM_OUTPUT_RATE = 25.0; // ₹25 per 1M tokens
+
+        // DOM Elements
+        const elTxns = document.getElementById('txns');
+        const elAudio = document.getElementById('audio');
+        const elInTokens = document.getElementById('inTokens');
+        const elOutTokens = document.getElementById('outTokens');
+        const elOcr = document.getElementById('ocr');
+
+        const elTotalUsers = document.getElementById('totalUsers');
+        const elConversion = document.getElementById('conversion');
+        const elTierPrice = document.getElementById('tierPrice');
+
+        let currentPerUserCost = 27.47;
+        let scenarioChartInstance = null;
+
+        // Initialize Theme Setup
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+
+        function updateThemeIcons(isDark) {
+            if (isDark) {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+            updateChartsTheme(isDark);
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            updateThemeIcons(isDark);
+        });
+
+        // Format Currency
+        const fmt = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });
+
+        // Chart 1: Competitor Pricing
+        const ctxComp = document.getElementById('competitorChart').getContext('2d');
+        const competitorChart = new Chart(ctxComp, {
+            type: 'bar',
+            data: {
+                labels:['Cashew (Pro)', 'FinArt (AI)', 'Money Manager (Ad-Free)'],
+                datasets:[{
+                    label: 'Yearly Cost (₹)',
+                    data: [1440, 800, 549], // Cashew 120*12=1440. FinArt 800. MM 549 (one time, normalized for comparison).
+                    backgroundColor:[
+                        'rgba(99, 102, 241, 0.8)', // Brand
+                        'rgba(168, 85, 247, 0.8)', // Purple
+                        'rgba(148, 163, 184, 0.8)'  // Slate
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return fmt.format(context.raw) + (context.dataIndex === 2 ? ' (One-Time)' : ' / yr');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(156, 163, 175, 0.1)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Initialize Scenario Chart
+        function initScenarioChart() {
+            const ctxScen = document.getElementById('scenarioChart').getContext('2d');
+            scenarioChartInstance = new Chart(ctxScen, {
+                type: 'bar',
+                data: {
+                    labels: ['Monthly Projections'],
+                    datasets:[
+                        {
+                            label: 'Revenue',
+                            data: [0],
+                            backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'AI Cost',
+                            data: [0],
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Margin (Pre-Expenses)',
+                            data: [0],
+                            backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return fmt.format(context.raw); }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(156, 163, 175, 0.1)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateChartsTheme(isDark) {
+            const textColor = isDark ? '#e5e7eb' : '#374151';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+            
+            [competitorChart, scenarioChartInstance].forEach(chart => {
+                if(chart) {
+                    chart.options.scales.x.ticks.color = textColor;
+                    chart.options.scales.y.ticks.color = textColor;
+                    chart.options.scales.y.grid.color = gridColor;
+                    chart.options.plugins.legend.labels = { color: textColor };
+                    chart.update();
+                }
+            });
+        }
+
+        // Calculator Logic
+        function calculateAI() {
+            const txns = parseInt(elTxns.value);
+            const audioSec = parseInt(elAudio.value);
+            const inTokens = parseInt(elInTokens.value);
+            const outTokens = parseInt(elOutTokens.value);
+            const ocrBuffer = parseInt(elOcr.value);
+
+            // Update display values
+            document.getElementById('txnsVal').innerText = txns;
+            document.getElementById('audioVal').innerText = audioSec + 's';
+            document.getElementById('inTokensVal').innerText = inTokens;
+            document.getElementById('outTokensVal').innerText = outTokens;
+            document.getElementById('ocrVal').innerText = fmt.format(ocrBuffer);
+
+            // STT Cost: (total seconds / 3600) * 30
+            const totalAudioSecs = txns * audioSec;
+            const sttCost = (totalAudioSecs / 3600) * STT_RATE_PER_HR;
+
+            // LLM Cost
+            const totalIn = txns * inTokens;
+            const totalOut = txns * outTokens;
+            const llmInCost = (totalIn / 1000000) * LLM_INPUT_RATE;
+            const llmOutCost = (totalOut / 1000000) * LLM_OUTPUT_RATE;
+            const llmTotalCost = llmInCost + llmOutCost;
+
+            // Total 
+            currentPerUserCost = sttCost + llmTotalCost + ocrBuffer;
+
+            // Update UI
+            document.getElementById('sttCost').innerText = fmt.format(sttCost);
+            document.getElementById('llmCost').innerText = fmt.format(llmTotalCost);
+            document.getElementById('ocrCost').innerText = fmt.format(ocrBuffer);
+            document.getElementById('totalCost').innerText = fmt.format(currentPerUserCost);
+
+            // Cascade update to scenario
+            calculateScenario();
+        }
+
+        function calculateScenario() {
+            const users = parseInt(elTotalUsers.value) || 0;
+            const conv = parseInt(elConversion.value);
+            const price = parseInt(elTierPrice.value) || 0;
+
+            document.getElementById('convVal').innerText = conv + '%';
+
+            const paidUsers = Math.floor(users * (conv / 100));
+            const revenue = paidUsers * price;
+            const totalCost = paidUsers * currentPerUserCost;
+            const margin = revenue - totalCost;
+
+            document.getElementById('paidUsersOut').innerText = paidUsers.toLocaleString();
+            document.getElementById('revenueOut').innerText = fmt.format(revenue);
+            document.getElementById('scenarioCostOut').innerText = fmt.format(totalCost);
+            document.getElementById('profitOut').innerText = fmt.format(margin);
+            document.getElementById('profitOut').className = margin >= 0 ? 'text-green-600 dark:text-green-400 font-bold' : 'text-red-600 dark:text-red-400 font-bold';
+
+            // Update Chart
+            if(scenarioChartInstance) {
+                scenarioChartInstance.data.datasets[0].data = [revenue];
+                scenarioChartInstance.data.datasets[1].data = [totalCost];
+                scenarioChartInstance.data.datasets[2].data =[margin];
+                scenarioChartInstance.update();
+            }
+        }
+
+        // Event Listeners
+        const inputs = [elTxns, elAudio, elInTokens, elOutTokens, elOcr];
+        inputs.forEach(input => input.addEventListener('input', calculateAI));
+
+        const scenarioInputs =[elTotalUsers, elConversion, elTierPrice];
+        scenarioInputs.forEach(input => input.addEventListener('input', calculateScenario));
+
+        // Initialization
+        initScenarioChart();
+        calculateAI(); // Triggers calculateScenario automatically
+        updateThemeIcons(document.documentElement.classList.contains('dark'));
+        updateChartsTheme(document.documentElement.classList.contains('dark'));
+
+    </script>
+</body>
+</html>
